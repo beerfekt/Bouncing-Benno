@@ -1,6 +1,9 @@
 package net.beerfekt.myfirstgame;
 
 
+
+
+
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,7 +11,6 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,9 +19,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
     public static final int WIDTH = 856,          // Abmessungen des Screens -> Bildfläche/Zeichenfläche
                             HEIGHT = 480,
-                            MOVESPEED = -5,       // Geschwindigkeit des Hintergrundes
+                            MOVESPEED = -5,       // Geschwindigkeit des Hintergrundes als Schritt
                             SMOKE_DELAY = 120,    // Rauchabstände via Verzögerung
                             MISSILES_DELAY = 2000; // Raketenabstände via Verzögerung
+
     //Elemente
     private MainThread thread;
     private Background background;
@@ -32,12 +35,33 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     //Missiles
     private ArrayList<Missile> missiles;
     private long   missileStartTime,       //zeitpunkt wenn missile losfliegt -> um zeitliche abstände zwischen missiles zu takten
-                   missileElapsed;         //wenn rakete
+            missileElapsed;         //wenn rakete
     private Random random = new Random();  //Generator für Zufallswerte für y koordinate starterposition der missiles
 
 
-    public GamePanel(Context context)
-    {
+
+
+
+    //Border Bottom ( aka Ground)
+
+    private ArrayList<BorderBottomPart> bottomBorder, testBottomBorder;
+
+    //with more difficult, the max height increases in the game
+    private int maxBorderHeight,                // Limit the Height when the Borders are generated
+            minBorderHeight,
+            progressDemon = 20;             // increase to slow down difficulty progression,
+    // decrease to speed up difficulty progression
+    //we wanna know if border is going up or down
+    //when they reach the max of borderheight,
+    //they'll move to the other direction
+    private boolean topDown = true,             //when the borders moving down = true
+            botDown = true;             //                        up   = true
+
+    private boolean newGameCreated;
+
+
+
+    public GamePanel(Context context)    {
         super(context);
 
 
@@ -58,6 +82,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         //creating elements
         background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.grassbg1));
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
+
+        //borders
+        bottomBorder = new ArrayList<BorderBottomPart>();
+        //TODO: TEST1 borders
+        testBottomBorder = new ArrayList<BorderBottomPart>();
 
         //smoke
         smoke = new ArrayList<SmokePuff>();
@@ -88,8 +117,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         while(retry)
         {
             try{thread.setRunning(false);
+                //In this example we have used the join() method in such a way that our threads execute in the specified order.
                 thread.join();
-                retry = false;
+                retry = false;  //stop the thread
+                thread = null ; //important - needed to allow the garbage collector to delete the object
             }catch(InterruptedException e){
                 e.printStackTrace();
             }
@@ -99,8 +130,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
+    public boolean onTouchEvent(MotionEvent event)    {
         if(event.getAction()==MotionEvent.ACTION_DOWN){
             if(!player.getPlaying())
             {
@@ -120,14 +150,41 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     }
 
 
-    public void update()
-    {
+    public void update()    {
         if(player.getPlaying()) {
 
             background.update();
             player.update();
 
-            //SMOKE  - add smokepuffs on timer------------------------------------
+
+            //TODO: Border logic
+            /*
+            //BORDERS ----------------------------------------------------------
+
+
+            //borderheight logic -> min and max
+            //calculate the threshold of height the border can have based on the score
+            //max and min border heart are updated and the border switched direction when either max
+            //or min is met
+
+            maxBorderHeight = 30 + player.getScore()/progressDemon;
+
+            //cap max border height so that borders can only take up 1/2 of the screen height
+            if (maxBorderHeight > HEIGHT/4) maxBorderHeight = HEIGHT/4;
+            minBorderHeight = 5 + player.getScore()/progressDemon;
+
+
+             //bottom border
+            this.updateBottomBorder();
+
+*/
+
+            //TODO: Update Methode welche Boden generiert
+
+            this.updateBottomBorder();
+
+
+            //SMOKE ------------------------------------------------------------
 
             // timestamp difference between now and smokeStart
             long elapsed = (System.nanoTime() - smokeStartTime)/1000000;
@@ -155,6 +212,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             }//for
 
 
+
             // MISSILES --------------------------------------
 
             long missilesElapsed = (System.nanoTime() - missileStartTime)/1000000;
@@ -169,8 +227,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                 int missilePositionY;
 
                 if (missiles.size() == 0) {
-                   //erste startet in der mitte der bildschirmhöhe
-                   missilePositionY = HEIGHT/2;
+                    //erste startet in der mitte der bildschirmhöhe
+                    missilePositionY = HEIGHT/2;
                 } else {
                     //die folgenden über zufällige y positionen
                     missilePositionY =(int) (random.nextDouble()*HEIGHT);
@@ -180,42 +238,89 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                 missiles.add (
 
                         new Missile( BitmapFactory.decodeResource(getResources(),R.drawable.missile),
-                                     WIDTH+10,
-                                     missilePositionY,
-                                     45,
-                                     15,
-                                     player.getScore(),
-                                     13 )
+                                WIDTH+10,
+                                missilePositionY,
+                                45,
+                                15,
+                                player.getScore(),
+                                13 )
                 );
 
-               missileStartTime = System.nanoTime(); //Timer resetten
+                missileStartTime = System.nanoTime(); //Timer resetten
             }//if missilesElapsed
+
 
 
             //loop through every missile and look if its collidet with other
             //gameobject
             for (int i = 0; i < missiles.size(); i++ ){
 
-               Missile currentMissile = missiles.get(i);
-               currentMissile.update();
+                Missile currentMissile = missiles.get(i);
+                currentMissile.update();
                 //check collision between missile, other gameobject passed to the function
-               if (collision(currentMissile, player)){
-                   //wenn kollidiert, rakete entfernen, player stoppen und spiel loop stoppen
-                   missiles.remove(i);
-                   player.setPlaying(false);
-                   break;
-               }
-               //wenn rakete rechts aus dem bildbereich verschwindet (-100 pixel nach links)
+                if (collision(currentMissile, player)){
+                    //wenn kollidiert, rakete entfernen, player stoppen und spiel loop stoppen
+                    missiles.remove(i);
+                    player.setPlaying(false);
+                    break;
+                }
+                //wenn rakete rechts aus dem bildbereich verschwindet (-100 pixel nach links)
                 //wird sie entfernt
-               if (currentMissile.getX() < - 100) {
-                   missiles.remove(i);
-                   break;
-               }
-            }
+                if (currentMissile.getX() < - 100) {
+                    missiles.remove(i);
+                    break;
+                }
+            }//for
 
-        }//if getPlaying
+        } else {
+            //Wenn Collision passierte, dann erzeuge neues spiel (z.b. bei if(collision() = true ;
+            if (!newGameCreated) newGame();
+        } //if getPlaying
 
     }//update
+
+
+    public void updateBottomBorder() {
+
+        //pro frame /s :
+
+        // wenn bereits mauer vorhanden:
+        if (testBottomBorder.size() > 0){
+
+            //Create next element
+            BorderBottomPart  lastElement = testBottomBorder.get(testBottomBorder.size() - 1);
+
+            testBottomBorder.add(
+                    new BorderBottomPart(
+                            BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                            lastElement.getX() + 20,
+                            400)
+            );
+        } else   {
+            //create first element
+            testBottomBorder.add(
+                    new BorderBottomPart(
+                            BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                            WIDTH,
+                            400)
+            );
+
+        }
+
+
+
+        for(int i = 0; i < testBottomBorder.size(); i++ ) {
+            //bewege die steine
+            testBottomBorder.get(i).update();
+            //Border aus dem Bildbereich links entfernen
+            //entferne die steine die den bildbereich links um die eigene länge verlassen
+            if(testBottomBorder.get(i).getX()<-20) {
+                testBottomBorder.remove(i);
+            }
+            //testBottomBorder.get(i).draw(canvas);
+        }
+
+    }
 
 
     private boolean collision(GameObject a, GameObject b)
@@ -253,12 +358,109 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
             //draw the missiles
             for (Missile missile : missiles){
-               missile.draw(canvas);
+                missile.draw(canvas);
             }
+
+            //TODO: BorderBottom drawing doesnt work?
+/*
+Original - geht nicht
+            //draw botborder
+            for(BorderBottomPart bb: bottomBorder)
+            {
+                bb.draw(canvas);
+            }
+*/
+
+
+
+/*
+
+            //pro frame /s :
+
+            // wenn bereits mauer vorhanden:
+            if (testBottomBorder.size() > 0){
+
+                //Create next element
+                BorderBottomPart  lastElement = testBottomBorder.get(testBottomBorder.size() - 1);
+
+                testBottomBorder.add(
+                        new BorderBottomPart(
+                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                                lastElement.getX() + 20,
+                                400)
+                );
+            } else   {
+                //create first element
+                testBottomBorder.add(
+                        new BorderBottomPart(
+                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                                WIDTH,
+                                400)
+                );
+
+            }
+
+
+
+            for(int i = 0; i < testBottomBorder.size(); i++ ) {
+                //bewege die steine
+                testBottomBorder.get(i).update();
+                //Border aus dem Bildbereich links entfernen
+                //entferne die steine die den bildbereich links um die eigene länge verlassen
+                if(testBottomBorder.get(i).getX()<-20) {
+                    testBottomBorder.remove(i);
+                }
+                //testBottomBorder.get(i).draw(canvas);
+            }
+*/
+            for (BorderBottomPart part : testBottomBorder) part.draw(canvas);
+
 
             canvas.restoreToCount(savedState);
         }
     }//draw
+
+
+
+
+    public void newGame()
+    {
+        bottomBorder.clear();
+        missiles.clear();
+        smoke.clear();
+
+        minBorderHeight = 5;
+        maxBorderHeight = 30;
+
+        //TODO: resetDY();
+        //player.resetDY();
+        player.resetScore();
+        player.setY(HEIGHT/2);
+
+        //create initial borders
+
+
+        //initial bottom border
+        for(int i = 0; i*20<WIDTH+40; i++)
+        {
+            //first border ever created
+            if(i==0)
+            {
+                bottomBorder.add(new BorderBottomPart(BitmapFactory.decodeResource(getResources(),R.drawable.brick)
+                        ,i*20,HEIGHT - minBorderHeight));
+            }
+            //adding borders until the initial screen is filed
+            else
+            {
+                bottomBorder.add(new BorderBottomPart(BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                        i * 20, bottomBorder.get(i - 1).getY() - 1));
+            }
+        }
+
+        newGameCreated = true;
+    }
+
+
 
 
 }//class
