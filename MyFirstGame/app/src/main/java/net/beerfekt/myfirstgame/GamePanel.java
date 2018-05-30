@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -22,6 +23,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                             MOVESPEED = -5,       // Geschwindigkeit des Hintergrundes als Schritt
                             SMOKE_DELAY = 120,    // Rauchabstände via Verzögerung
                             MISSILES_DELAY = 2000; // Raketenabstände via Verzögerung
+
 
     //Elemente
     private MainThread thread;
@@ -46,10 +48,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     private ArrayList<BorderBottomPart> bottomBorder, testBottomBorder;
 
-    //with more difficult, the max height increases in the game
-    private int maxBorderHeight,                // Limit the Height when the Borders are generated
-            minBorderHeight,
-            progressDemon = 20;             // increase to slow down difficulty progression,
     // decrease to speed up difficulty progression
     //we wanna know if border is going up or down
     //when they reach the max of borderheight,
@@ -57,7 +55,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private boolean topDown = true,             //when the borders moving down = true
             botDown = true;             //                        up   = true
 
-    private boolean newGameCreated;
+    private boolean newGameCreated ;
 
 
 
@@ -132,14 +130,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public boolean onTouchEvent(MotionEvent event)    {
         if(event.getAction()==MotionEvent.ACTION_DOWN){
-            if(!player.getPlaying())
+            //TODO: Newgame versuch, hier newgame auf onTouch -> && !newgGameCreated als bedingung hier rein
+            if(!player.getPlaying() && !newGameCreated )
             {
+                //TODO: NewGame versuch, newGame(); auf onTouch()
+                newGame();
                 player.setPlaying(true);
-            } else {
+                player.setUp(true);
+            }  else {
                 player.setUp(true);
             }
             return true;
         }
+
         if( event.getAction() == MotionEvent.ACTION_UP)
         {
             player.setUp(false);
@@ -151,161 +154,154 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
 
     public void update()    {
+
         if(player.getPlaying()) {
+
+            checkForCollision(bottomBorder);
 
             background.update();
             player.update();
 
-
-            //TODO: Border logic
-            /*
-            //BORDERS ----------------------------------------------------------
-
-
-            //borderheight logic -> min and max
-            //calculate the threshold of height the border can have based on the score
-            //max and min border heart are updated and the border switched direction when either max
-            //or min is met
-
-            maxBorderHeight = 30 + player.getScore()/progressDemon;
-
-            //cap max border height so that borders can only take up 1/2 of the screen height
-            if (maxBorderHeight > HEIGHT/4) maxBorderHeight = HEIGHT/4;
-            minBorderHeight = 5 + player.getScore()/progressDemon;
-
-
-             //bottom border
             this.updateBottomBorder();
-
-*/
-
-            //TODO: Update Methode welche Boden generiert
-
-            this.updateBottomBorder();
-
-
-            //SMOKE ------------------------------------------------------------
-
-            // timestamp difference between now and smokeStart
-            long elapsed = (System.nanoTime() - smokeStartTime)/1000000;
-
-            //Nach 120 ms wird ein neuer Smokepuff erstellt
-            if (elapsed > SMOKE_DELAY){
-                //add new smokepuff with the coordinates of the player,
-                // it will move to left away
-                smoke.add(new SmokePuff( player.getX(), player.getY()+10 ));
-                //reset the start time
-                smokeStartTime = System.nanoTime();
-            }
-
-
-            //this loop go to every smokepuff object and update it
-
-            for (int i = 0; i < smoke.size(); i++ ) {
-                //update every smokepuff
-                smoke.get(i).update();
-                //wenn die Position des SmokePuffs < -10 (da größe 10px) ist, dann wird er entfernt
-                // aus dem speicher
-                if (smoke.get(i).getX() < -10 ) {
-                    smoke.remove(i);
-                }
-            }//for
-
-
-
-            // MISSILES --------------------------------------
-
-            long missilesElapsed = (System.nanoTime() - missileStartTime)/1000000;
-
-            //Verzögerung/Abstände zwischen den Raketen:
-            //je höher der score, desto kleiner die abstände (Verzögerung - Score = kleinere Verzögerung = kleinere Abstände)
-            if (missilesElapsed >  (MISSILES_DELAY -player.getScore()/4) ) {
-
-
-                //starthöhe ermitteln
-
-                int missilePositionY;
-
-                if (missiles.size() == 0) {
-                    //erste startet in der mitte der bildschirmhöhe
-                    missilePositionY = HEIGHT/2;
-                } else {
-                    //die folgenden über zufällige y positionen
-                    missilePositionY =(int) (random.nextDouble()*HEIGHT);
-                }
-
-                //Rakete mit einbezug der höhe (oben) erstellen
-                missiles.add (
-
-                        new Missile( BitmapFactory.decodeResource(getResources(),R.drawable.missile),
-                                WIDTH+10,
-                                missilePositionY,
-                                45,
-                                15,
-                                player.getScore(),
-                                13 )
-                );
-
-                missileStartTime = System.nanoTime(); //Timer resetten
-            }//if missilesElapsed
-
-
-
-            //loop through every missile and look if its collidet with other
-            //gameobject
-            for (int i = 0; i < missiles.size(); i++ ){
-
-                Missile currentMissile = missiles.get(i);
-                currentMissile.update();
-                //check collision between missile, other gameobject passed to the function
-                if (collision(currentMissile, player)){
-                    //wenn kollidiert, rakete entfernen, player stoppen und spiel loop stoppen
-                    missiles.remove(i);
-                    player.setPlaying(false);
-                    break;
-                }
-                //wenn rakete rechts aus dem bildbereich verschwindet (-100 pixel nach links)
-                //wird sie entfernt
-                if (currentMissile.getX() < - 100) {
-                    missiles.remove(i);
-                    break;
-                }
-            }//for
+            this.updateSmoke();
+            this.updateMissiles();
 
         } else {
+            newGameCreated = false;
+
+            //TODO: NewgameVersuch:  alte Version if (!newGameCreated) newGame(); wurde durch NewGameversuch ersetzt
             //Wenn Collision passierte, dann erzeuge neues spiel (z.b. bei if(collision() = true ;
-            if (!newGameCreated) newGame();
+            //if (!newGameCreated) newGame();
         } //if getPlaying
 
     }//update
+
+
+    private void updateSmoke() {
+        //TODO SMOKE ALS EIGENE METHODE
+        //SMOKE ------------------------------------------------------------
+
+        // timestamp difference between now and smokeStart
+        long elapsed = (System.nanoTime() - smokeStartTime)/1000000;
+
+        //Nach 120 ms wird ein neuer Smokepuff erstellt
+        if (elapsed > SMOKE_DELAY){
+            //add new smokepuff with the coordinates of the player,
+            // it will move to left away
+            smoke.add(new SmokePuff( player.getX(), player.getY()+10 ));
+            //reset the start time
+            smokeStartTime = System.nanoTime();
+        }
+
+
+        //this loop go to every smokepuff object and update it
+
+        for (int i = 0; i < smoke.size(); i++ ) {
+            //update every smokepuff
+            smoke.get(i).update();
+            //wenn die Position des SmokePuffs < -10 (da größe 10px) ist, dann wird er entfernt
+            // aus dem speicher
+            if (smoke.get(i).getX() < -10 ) {
+                smoke.remove(i);
+            }
+        }//for
+    }
+
+
+    private void updateMissiles() {
+        //TODO MISSILES ALS EIGENE METHODE
+        // MISSILES --------------------------------------
+
+        long missilesElapsed = (System.nanoTime() - missileStartTime)/1000000;
+
+        //Verzögerung/Abstände zwischen den Raketen:
+        //je höher der score, desto kleiner die abstände (Verzögerung - Score = kleinere Verzögerung = kleinere Abstände)
+        if (missilesElapsed >  (MISSILES_DELAY - player.getScore() /*vorher /4*/) ) {
+
+
+            //starthöhe ermitteln
+
+            int missilePositionY;
+
+            if (missiles.size() == 0) {
+                //erste startet in der mitte der bildschirmhöhe
+                missilePositionY = HEIGHT/2;
+            } else {
+                //die folgenden über zufällige y positionen
+                missilePositionY = (int) (random.nextDouble()*HEIGHT);
+            }
+
+            //Rakete mit einbezug der höhe (oben) erstellen
+            missiles.add (
+
+                    new Missile( BitmapFactory.decodeResource(getResources(),R.drawable.missile),
+                            WIDTH+10,
+                            missilePositionY,
+                            45,
+                            15,
+                            player.getScore(),
+                            13 )
+            );
+
+            missileStartTime = System.nanoTime(); //Timer resetten
+        }//if missilesElapsed
+
+
+
+        //loop through every missile and look if its collidet with other
+        //gameobject
+        for (int i = 0; i < missiles.size(); i++ ){
+
+            Missile currentMissile = missiles.get(i);
+            currentMissile.update();
+            //check collision between missile, other gameobject passed to the function
+            if (collision(currentMissile, player)){
+                //wenn kollidiert, rakete entfernen, player stoppen und spiel loop stoppen
+                missiles.remove(i);
+                player.setPlaying(false);
+                Log.d("COLLISION", " -> MISSILE ---- SET PLAYING FALSE");
+                break;
+            }
+            //wenn rakete rechts aus dem bildbereich verschwindet (-100 pixel nach links)
+            //wird sie entfernt
+            if (currentMissile.getX() < - 100) {
+                missiles.remove(i);
+                break;
+            }
+        }//for
+    }
 
 
     public void updateBottomBorder() {
 
         //pro frame /s :
 
-        // wenn bereits mauer vorhanden:
-        if (testBottomBorder.size() > 0){
+             // wenn bereits mauer vorhanden:
+            if (testBottomBorder.size() > 0) {
 
-            //Create next element
-            BorderBottomPart  lastElement = testBottomBorder.get(testBottomBorder.size() - 1);
+                //Create next element
+                BorderBottomPart lastElement = testBottomBorder.get(testBottomBorder.size() - 1);
 
-            testBottomBorder.add(
-                    new BorderBottomPart(
-                            BitmapFactory.decodeResource(getResources(), R.drawable.brick),
-                            lastElement.getX() + 20,
-                            400)
-            );
-        } else   {
-            //create first element
-            testBottomBorder.add(
-                    new BorderBottomPart(
-                            BitmapFactory.decodeResource(getResources(), R.drawable.brick),
-                            WIDTH,
-                            400)
-            );
+                int randomHeight = (int) (4 * HEIGHT / 5 + lastElement.getHeight() / 4 * random.nextDouble());
 
-        }
+                testBottomBorder.add(
+                        new BorderBottomPart(
+                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                                lastElement.getX() + 20 , //x position um die länge des letzten steines versetzt (hinten an die schlange angehängt)
+                                randomHeight)
+                );
+
+
+            } else {
+                //create first element
+                testBottomBorder.add(
+                        new BorderBottomPart(
+                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                                WIDTH,  //x Position des ersten steines
+                                400)
+                );
+
+            }//if size
 
 
 
@@ -317,8 +313,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             if(testBottomBorder.get(i).getX()<-20) {
                 testBottomBorder.remove(i);
             }
+
+
             //testBottomBorder.get(i).draw(canvas);
-        }
+        }// for
 
     }
 
@@ -336,6 +334,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }//collision
 
+    private <T extends GameObject> void checkForCollision(ArrayList<T> objects) {
+        for (int i = 0; i < objects.size(); i++) {
+            if (collision(objects.get(i), player)) {
+                player.setPlaying(false);
+                Log.d("COLLISION", "--- SET PLAYING FALSE");
+                break;
+            }
+        }
+    }
 
     @Override
     public void draw(Canvas canvas) {
@@ -420,42 +427,16 @@ Original - geht nicht
         }
     }//draw
 
-
-
-
     public void newGame()
     {
-        bottomBorder.clear();
+        testBottomBorder.clear();
         missiles.clear();
         smoke.clear();
 
-        minBorderHeight = 5;
-        maxBorderHeight = 30;
-
-        //TODO: resetDY();
-        //player.resetDY();
+        //TODO: resetDY() , wird das benötigt??
+        player.resetDY();
         player.resetScore();
         player.setY(HEIGHT/2);
-
-        //create initial borders
-
-
-        //initial bottom border
-        for(int i = 0; i*20<WIDTH+40; i++)
-        {
-            //first border ever created
-            if(i==0)
-            {
-                bottomBorder.add(new BorderBottomPart(BitmapFactory.decodeResource(getResources(),R.drawable.brick)
-                        ,i*20,HEIGHT - minBorderHeight));
-            }
-            //adding borders until the initial screen is filed
-            else
-            {
-                bottomBorder.add(new BorderBottomPart(BitmapFactory.decodeResource(getResources(), R.drawable.brick),
-                        i * 20, bottomBorder.get(i - 1).getY() - 1));
-            }
-        }
 
         newGameCreated = true;
     }
