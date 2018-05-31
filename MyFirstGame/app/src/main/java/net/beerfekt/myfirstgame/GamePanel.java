@@ -5,9 +5,13 @@ package net.beerfekt.myfirstgame;
 
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -40,13 +44,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             missileElapsed;         //wenn rakete
     private Random random = new Random();  //Generator für Zufallswerte für y koordinate starterposition der missiles
 
-
+    //Score
+    private String renderedScoreString;
+    private int    renderedScore;
+    private Paint paint;
 
 
 
     //Border Bottom ( aka Ground)
 
-    private ArrayList<BorderBottomPart> bottomBorder, testBottomBorder;
+    private ArrayList<BorderBottomPart> bottomBorder;
 
     // decrease to speed up difficulty progression
     //we wanna know if border is going up or down
@@ -70,6 +77,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         //make gamePanel focusable so it can handle events
         setFocusable(true);
+
+
+
+        //TODO: FALLS DAS funktionieren sollte, code so legen dass er nur einmal ausgeführt wird
+        //Style "malerei" erstellen
+        paint = new Paint();
+
+        AssetManager assetManager = getContext().getAssets();
+        Typeface army = Typeface.createFromAsset(assetManager,  "fonts/army_rust.ttf");
+
+        //Typeface army = Typeface.createFromAsset(context.getAssets(),"fonts/army_rust.ttf" );
+        //Typeface army = Typeface.create(plain, Typeface.DEFAULT_BOLD);
+        paint.setTypeface(army);
+        //Farbe
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(30);
+
+
+
+
+
+
     }
 
 
@@ -82,9 +111,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
 
         //borders
+        //TODO: Liste darf nicht wachsen, tut sie aber trotz remove
         bottomBorder = new ArrayList<BorderBottomPart>();
-        //TODO: TEST1 borders
-        testBottomBorder = new ArrayList<BorderBottomPart>();
 
         //smoke
         smoke = new ArrayList<SmokePuff>();
@@ -157,21 +185,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         if(player.getPlaying()) {
 
-            checkForCollision(bottomBorder);
+
 
             background.update();
-            player.update();
 
+            checkForCollision(bottomBorder);
+
+            player.update();
+            //TODO: SPeicher läuft voll, evt. borderbottom überprüfen, und generell überprüfen ob alte elemente aufgeräumt werden
             this.updateBottomBorder();
             this.updateSmoke();
             this.updateMissiles();
 
         } else {
             newGameCreated = false;
-
-            //TODO: NewgameVersuch:  alte Version if (!newGameCreated) newGame(); wurde durch NewGameversuch ersetzt
-            //Wenn Collision passierte, dann erzeuge neues spiel (z.b. bei if(collision() = true ;
-            //if (!newGameCreated) newGame();
         } //if getPlaying
 
     }//update
@@ -209,8 +236,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
 
     private void updateMissiles() {
-        //TODO MISSILES ALS EIGENE METHODE
-        // MISSILES --------------------------------------
+
+        //Log.d("MISSILES","ANZAHL ELEMENTE: --------" + Integer.toString(missiles.size()) + "----------" );
 
         long missilesElapsed = (System.nanoTime() - missileStartTime)/1000000;
 
@@ -221,15 +248,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
             //starthöhe ermitteln
 
-            int missilePositionY;
+
+            //die folgenden über zufällige y positionen
+            int missilePositionY = (int) (random.nextDouble()*HEIGHT);
 
             if (missiles.size() == 0) {
                 //erste startet in der mitte der bildschirmhöhe
                 missilePositionY = HEIGHT/2;
-            } else {
-                //die folgenden über zufällige y positionen
-                missilePositionY = (int) (random.nextDouble()*HEIGHT);
             }
+
+
 
             //Rakete mit einbezug der höhe (oben) erstellen
             missiles.add (
@@ -274,52 +302,48 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     public void updateBottomBorder() {
 
-        //pro frame /s :
+        for(int i = 0; i < bottomBorder.size(); i++ ) {
 
-             // wenn bereits mauer vorhanden:
-            if (testBottomBorder.size() > 0) {
-
-                //Create next element
-                BorderBottomPart lastElement = testBottomBorder.get(testBottomBorder.size() - 1);
-
-                int randomHeight = (int) (4 * HEIGHT / 5 + lastElement.getHeight() / 4 * random.nextDouble());
-
-                testBottomBorder.add(
-                        new BorderBottomPart(
-                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
-                                lastElement.getX() + 20 , //x position um die länge des letzten steines versetzt (hinten an die schlange angehängt)
-                                randomHeight)
-                );
-
-
-            } else {
-                //create first element
-                testBottomBorder.add(
-                        new BorderBottomPart(
-                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
-                                WIDTH,  //x Position des ersten steines
-                                400)
-                );
-
-            }//if size
-
-
-
-        for(int i = 0; i < testBottomBorder.size(); i++ ) {
+            BorderBottomPart currentPart = bottomBorder.get(i);
             //bewege die steine
-            testBottomBorder.get(i).update();
-            //Border aus dem Bildbereich links entfernen
-            //entferne die steine die den bildbereich links um die eigene länge verlassen
-            if(testBottomBorder.get(i).getX()<-20) {
-                testBottomBorder.remove(i);
-            }
+            currentPart.update();
 
-
-            //testBottomBorder.get(i).draw(canvas);
+            //entferne steine die den bildbereich um die länge eines steines links verlassen
+            if(currentPart.getX() < -20) {
+                bottomBorder.remove(i);
+                //Log.d("BORDER-BOTTOM","BORDER-BOTTOM   element removed:" + i + " \n" + "NEUE ANZAHL ELEMENTE: --------" + Integer.toString(bottomBorder.size()) + "----------" );
+                //if ( bottomBorder.remove(i) )
+                addBorderPart();
+            }//if
         }// for
+    }//updateBottomBorder
 
+
+    //append Brick to the Border
+    private void addBorderPart(){
+        int xPosition = WIDTH,
+            yPosition   = HEIGHT-80;
+
+
+        // wenn bereits mauer vorhanden:
+        if (bottomBorder.size() > 0) {
+            //Create next element
+            BorderBottomPart lastElement = bottomBorder.get( bottomBorder.size() - 1 );
+            //place it next to the last element created
+            xPosition = lastElement.getX()+20;
+            //random-height
+            yPosition = (int) (4 * HEIGHT / 5 + lastElement.getHeight() / 4 * random.nextDouble());
+        }//if
+
+
+        //create element and append it to the border
+        bottomBorder.add (
+                new BorderBottomPart(
+                        BitmapFactory.decodeResource(getResources(), R.drawable.brick),
+                        xPosition,
+                        yPosition)
+        );
     }
-
 
     private boolean collision(GameObject a, GameObject b)
     {
@@ -338,7 +362,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         for (int i = 0; i < objects.size(); i++) {
             if (collision(objects.get(i), player)) {
                 player.setPlaying(false);
-                Log.d("COLLISION", "--- SET PLAYING FALSE");
                 break;
             }
         }
@@ -347,13 +370,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+
+        //Maße für Gesamtbildfläche holen:
         final float scaleFactorX = getWidth() / (WIDTH * 1.f);
         final float scaleFactorY = getHeight() / (HEIGHT * 1.f);
 
         if (canvas != null) {
             final int savedState = canvas.save();
 
+            //Zeichenfläche auf Bildschirmgröße skalieren
             canvas.scale(scaleFactorX, scaleFactorY);
+            //Hintergrund + Spielfigur zeichnen
             background.draw(canvas);
             player.draw(canvas);
 
@@ -362,66 +390,31 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                 smokePuff.draw(canvas);
             }
 
-
             //draw the missiles
             for (Missile missile : missiles){
                 missile.draw(canvas);
             }
 
-            //TODO: BorderBottom drawing doesnt work?
-/*
-Original - geht nicht
-            //draw botborder
-            for(BorderBottomPart bb: bottomBorder)
-            {
-                bb.draw(canvas);
-            }
-*/
-
-
-
-/*
-
-            //pro frame /s :
-
-            // wenn bereits mauer vorhanden:
-            if (testBottomBorder.size() > 0){
-
-                //Create next element
-                BorderBottomPart  lastElement = testBottomBorder.get(testBottomBorder.size() - 1);
-
-                testBottomBorder.add(
-                        new BorderBottomPart(
-                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
-                                lastElement.getX() + 20,
-                                400)
-                );
-            } else   {
-                //create first element
-                testBottomBorder.add(
-                        new BorderBottomPart(
-                                BitmapFactory.decodeResource(getResources(), R.drawable.brick),
-                                WIDTH,
-                                400)
-                );
-
+            //draw the bottom
+            for (BorderBottomPart part : bottomBorder){
+                part.draw(canvas);
             }
 
+            //draw the Score
+            int score = player.getScore();
 
-
-            for(int i = 0; i < testBottomBorder.size(); i++ ) {
-                //bewege die steine
-                testBottomBorder.get(i).update();
-                //Border aus dem Bildbereich links entfernen
-                //entferne die steine die den bildbereich links um die eigene länge verlassen
-                if(testBottomBorder.get(i).getX()<-20) {
-                    testBottomBorder.remove(i);
+            //Nur alle 20 punkte score setzen
+            if  (score % 20 == 0) {
+                //Score so setzen sodass nicht permanent neue String Objekte erzeugt werden
+                if (score != this.renderedScore || this.renderedScoreString == null) {
+                    this.renderedScore = score;
+                    this.renderedScoreString = Integer.toString(this.renderedScore);
                 }
-                //testBottomBorder.get(i).draw(canvas);
             }
-*/
-            for (BorderBottomPart part : testBottomBorder) part.draw(canvas);
 
+            //Score reinmalen
+            //Text + Stil auf Zeichenfläche malen
+            canvas.drawText("Score: " + this.renderedScoreString, WIDTH/2, HEIGHT/8, paint);
 
             canvas.restoreToCount(savedState);
         }
@@ -429,14 +422,20 @@ Original - geht nicht
 
     public void newGame()
     {
-        testBottomBorder.clear();
+        bottomBorder.clear();
         missiles.clear();
         smoke.clear();
 
         //TODO: resetDY() , wird das benötigt??
         player.resetDY();
         player.resetScore();
-        player.setY(HEIGHT/2);
+        this.renderedScoreString = Integer.toString(player.getScore());
+        player.resetStartPosition();
+
+        //Initialise the First border which is updated later
+        for (int i = 0; (i * 20) < (WIDTH + 40); i++ ) {
+            addBorderPart();
+        }
 
         newGameCreated = true;
     }

@@ -13,14 +13,13 @@ public class Player extends GameObject{
     private long startTime;
 
     //PARAMETERS FOR THE MOVEMENT / POSITION of the Player
-    private static final int LIMIT_ACCELERATION  = 14,                                           //höchster/niedrigster Beschleunigungswert
+    private static final int LIMIT_ACCELERATION  = 8,                                           //höchster/niedrigster Beschleunigungswert
                              //Helicopter Spielraum begrenzen (sodass dieser nicht aus Bild springt)
-                             LIMIT_AREA_TOP      = GamePanel.HEIGHT / 8,                         //1/8 der Canvas-Höhe ist abstand nach oben
-                             LIMIT_AREA_BOTTOM   = GamePanel.HEIGHT - ( GamePanel.HEIGHT/4),     //1/4 der Canvas-Höhe ist abstand nach unten
+                             LIMIT_AREA_TOP      = GamePanel.HEIGHT / 10,                         //1/8 der Canvas-Höhe ist abstand nach oben
+                             LIMIT_AREA_BOTTOM   = GamePanel.HEIGHT - ( GamePanel.HEIGHT/6),     //1/4 der Canvas-Höhe ist abstand nach unten
                              STARTPOSITION       = LIMIT_AREA_BOTTOM,                            //Startposition Hubschrauber auf y achse
-                             SPEED_VERTICAL_UP   = 8,                                            //heli geschwindigkeit aufsteigen
-                             SPEED_VERTICAL_DOWN = 3;                                            //heli                 absteigen
-
+                             SPEED_VERTICAL_UP   = 6,                                            //heli geschwindigkeit aufsteigen
+                             SPEED_VERTICAL_DOWN = 2;                                            //heli                 absteigen
 
 
     public Player(Bitmap res, int w, int h, int numFrames) {
@@ -67,7 +66,7 @@ public class Player extends GameObject{
         }
 
         //Acceleration limits
-        if( dy >  LIMIT_ACCELERATION ) dy =   LIMIT_ACCELERATION;
+        if( dy >  LIMIT_ACCELERATION ) dy =   LIMIT_ACCELERATION-5;
         if( dy <- LIMIT_ACCELERATION ) dy = - LIMIT_ACCELERATION;
 
         //increase the height of helicopter
@@ -96,4 +95,7 @@ public class Player extends GameObject{
     public void resetScore(){score = 0;}
 
     public void resetDY(){ dy = 0;}
-}
+
+    public void resetStartPosition(){ y = STARTPOSITION;}
+
+}//
