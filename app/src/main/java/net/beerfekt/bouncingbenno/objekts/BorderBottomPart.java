@@ -1,4 +1,4 @@
-package net.beerfekt.myfirstgame;
+package net.beerfekt.bouncingbenno.objekts;
 
 //Begrenzung unten
 // Kann auch zu Boden umgemünzt werden
@@ -8,29 +8,25 @@ package net.beerfekt.myfirstgame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-public class BorderBottomPart extends GameObject{
+import net.beerfekt.bouncingbenno.GamePanel;
+
+public class BorderBottomPart extends AbstractObject {
 
     private Bitmap image;
     public BorderBottomPart(Bitmap res, int x, int y)
     {
-        height = 200;
-        width = 20;
+        super(x, y, GamePanel.MOVESPEED, 0, 20, 200);
 
-        this.x = x;
-        this.y = y;
-        dx = GamePanel.MOVESPEED;
-
-        image = Bitmap.createBitmap(res, 0, 0, width, height);
+        image = Bitmap.createBitmap(res, 0, 0, getWidth(), getHeight());
 
     }
     public void update()
     {
-        x +=dx;
-
+        updatePosition();
     }
     public void draw(Canvas canvas)
     {
-        canvas.drawBitmap(image, x, y, null);
+        canvas.drawBitmap(image, getX(), getY(), null);
 
     }
 }

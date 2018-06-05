@@ -1,4 +1,4 @@
-package net.beerfekt.myfirstgame;
+package net.beerfekt.bouncingbenno;
 
 
 import android.graphics.Canvas;

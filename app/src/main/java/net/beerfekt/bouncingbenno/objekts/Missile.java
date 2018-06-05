@@ -1,17 +1,20 @@
-package net.beerfekt.myfirstgame;
+package net.beerfekt.bouncingbenno.objekts;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import net.beerfekt.bouncingbenno.objekts.properties.Animation;
+import net.beerfekt.bouncingbenno.objekts.properties.KillBox;
+
 import java.util.Random;
 
 
-public class Missile extends GameObject{
+public class Missile extends AbstractObject implements KillBox{
 
     private int score;  // wird mit geschwindigkeit verrechnet zwecks schwierigkeitsgrad
     private int speed;
     private Random rand = new Random();
-    private Animation animation = new Animation();
+    private Animation animation;
     private Bitmap spritesheet;  //BIld welches die ganze sequenz beinhaltet und zerstückelt wird in einzelbilder
 
 
@@ -21,13 +24,7 @@ public class Missile extends GameObject{
 
     public Missile(Bitmap res, int x, int y, int w, int h, int s, int numFrames)
     {
-        //Super ruft Gameobject auf -> gleiches wie this.x (kommt auch aus Oberklasse)
-        super.x = x;
-        super.y = y;
-
-        //Dimensionen festlegen
-        width = w;
-        height = h;
+        super(x,y, 0,0,w,h);
 
         //wenn der score höher wird, wird er mit der geschwindigkeit verrechnet bei höherem schwierigkeitsgrad
         score = s;
@@ -50,15 +47,10 @@ public class Missile extends GameObject{
         // Bild zerstückeln in Einzelbilder und diese an Bitmap[] array anhängen
         for(int i = 0; i < image.length; i++)
         {                                                     //nimmt nächstes bild nach unten höhe *2  y wert = nächster bildausschnitt)
-            image[i] = Bitmap.createBitmap(spritesheet, 0, i*height, width, height);
+            image[i] = Bitmap.createBitmap(spritesheet, 0, i*getHeight(), getWidth(), getHeight());
         }
 
-        //bilder zur animation hinzufügen
-        animation.setFrames(image);
-        //Animation verzögerung einstellen
-        //wenn die rakete schneller wird, dreht sie sich auch schneller
-        // verzögerung wird kleiner da verzögerung - geschwindigkeit
-        animation.setDelay(100-speed);
+        animation = new Animation(image, 100-speed*1000);
 
 
         //--------------------------------------------------------------------
@@ -67,14 +59,14 @@ public class Missile extends GameObject{
 
     public void update()
     {
-        x -= speed;
+        setX(getX()- speed);
         animation.update();
     }
 
     public void draw(Canvas canvas)
     {
         try {
-            canvas.drawBitmap(animation.getImage(),x,y,null);
+            canvas.drawBitmap(animation.getImage(),getX(),getY(),null);
         } catch(Exception e){}
     }
 
@@ -83,7 +75,7 @@ public class Missile extends GameObject{
     {
         //offset slightly for more realistic collision detection
         //Rakete dringt vor explosion um 10px ein
-        return width-10;
+        return getWidth()-10;
     }
 
 }

@@ -1,4 +1,4 @@
-package net.beerfekt.myfirstgame;
+package net.beerfekt.bouncingbenno;
 
 
 
@@ -16,6 +16,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import net.beerfekt.bouncingbenno.objekts.BorderBottomPart;
+import net.beerfekt.bouncingbenno.objekts.AbstractObject;
+import net.beerfekt.bouncingbenno.objekts.Missile;
+import net.beerfekt.bouncingbenno.objekts.Player;
+import net.beerfekt.bouncingbenno.objekts.SmokePuff;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -345,7 +352,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         );
     }
 
-    private boolean collision(GameObject a, GameObject b)
+    private boolean collision(AbstractObject a, AbstractObject b)
     {
         //Get the boxes of the gameobjects
         Rect collisionBoxA = a.getRectangle();
@@ -358,7 +365,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }//collision
 
-    private <T extends GameObject> void checkForCollision(ArrayList<T> objects) {
+    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects) {
         for (int i = 0; i < objects.size(); i++) {
             if (collision(objects.get(i), player)) {
                 player.setPlaying(false);
