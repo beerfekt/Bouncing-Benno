@@ -10,19 +10,31 @@ public abstract class AbstractObject {
     private int directionY;
     private int width;
     private int height;
+    private long positionDuration;
+    private long lastFrameTime;
 
-    public AbstractObject(int x, int y, int dx, int dy, int width, int height) {
+    public AbstractObject(int x, int y, int directionX, int directionY, int width, int height, long positionDuration) {
         this.x = x;
         this.y = y;
-        this.directionX = dx;
-        this.directionY = dy;
+        this.directionX = directionX;
+        this.directionY = directionY;
         this.width = width;
         this.height = height;
+        this.positionDuration = positionDuration;
+        this.lastFrameTime = System.currentTimeMillis();
     }
 
-    public void updatePosition() {
-        x += directionX;
-        y += directionY;
+    public void update() {
+        if (positionDuration == -1) {
+            return;
+        }
+        long elapsed = (System.currentTimeMillis() - lastFrameTime);
+
+        if (elapsed > positionDuration) {
+            x += directionX;
+            y += directionY;
+            lastFrameTime += positionDuration;
+        }
     }
 
     public Rect getRectangle() {

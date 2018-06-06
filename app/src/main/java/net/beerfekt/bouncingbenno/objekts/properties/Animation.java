@@ -3,26 +3,26 @@ package net.beerfekt.bouncingbenno.objekts.properties;
 import android.graphics.Bitmap;
 
 public class Animation {
-    private Bitmap[] immages;
-    private int currentImmage;
-    private long immageDuration;
+    private Bitmap[] images;
+    private int currentImage;
+    private long imageDuration;
     private long lastFrameTime;
     private boolean playedOnce;
 
     /**
-     * @param immages        Die Bilder in der Animations Reihnfolge
-     * @param immageDuration Die Anzeigezeit eines Bildes in Millisekunden
+     * @param images        Die Bilder in der Animations Reihnfolge
+     * @param imageDuration Die Anzeigezeit eines Bildes in Millisekunden
      */
-    public Animation(Bitmap[] immages, long immageDuration) {
-        this.immages = immages;
-        this.currentImmage = 0;
-        this.immageDuration = immageDuration;
+    public Animation(Bitmap[] images, long imageDuration) {
+        this.images = images;
+        this.currentImage = 0;
+        this.imageDuration = imageDuration;
         this.lastFrameTime = System.currentTimeMillis();
         this.playedOnce = false;
     }
 
     public Bitmap getImage() {
-        return immages[currentImmage];
+        return images[currentImage];
     }
 
     /**
@@ -36,15 +36,19 @@ public class Animation {
      * Berechnet das Aktuelle Bild der Animation
      */
     public void update() {
+        if (imageDuration == -1) {
+            return;
+        }
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
 
-        if (elapsed > immageDuration) {
-            currentImmage++;
-            lastFrameTime += immageDuration;
-            if (currentImmage == immages.length) {
-                currentImmage = 0;
+        if (elapsed > imageDuration) {
+            currentImage++;
+            lastFrameTime += imageDuration;
+            if (currentImage == images.length) {
+                currentImage = 0;
                 playedOnce = true;
             }
         }
+
     }
 }

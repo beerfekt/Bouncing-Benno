@@ -1,8 +1,7 @@
 package net.beerfekt.bouncingbenno.objekts.properties;
 
-import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 public interface Drawable {
-    Bitmap getImmage();
-    void draw();
+    void draw(Canvas canvas);
 }
