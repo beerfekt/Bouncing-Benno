@@ -1,3 +1,14 @@
+/bin/
+/.settings/
+/build/
+/target/
+/reports/
+
+.classpath
+.project
+.pmd
+
+
 *.iml
 .gradle
 /local.properties

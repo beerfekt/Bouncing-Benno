@@ -41,6 +41,11 @@ public abstract class AbstractObject {
         return new Rect(x, y, x + width, y + height);
     }
 
+    public boolean intersect(AbstractObject obj)
+    {
+        return getRectangle().intersect(obj.getRectangle());
+    }
+
     public int getX() {
         return x;
     }

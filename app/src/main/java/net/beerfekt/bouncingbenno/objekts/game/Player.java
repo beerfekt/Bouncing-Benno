@@ -12,7 +12,6 @@ import net.beerfekt.bouncingbenno.objekts.properties.Animation;
 public class Player extends ImageNeutralBox {
     private int score;
     private boolean up, playing;
-    private Animation animation;
     private long startTime;
 
     //PARAMETERS FOR THE MOVEMENT / POSITION of the Player
@@ -46,13 +45,14 @@ public class Player extends ImageNeutralBox {
         up = b;
     }
 
+    @Override
     public void update() {
+        super.update();
         long elapsed = (System.nanoTime() - startTime) / 1000000;
         if (elapsed > 100) {
             score++;
             startTime = System.nanoTime();
         }
-        animation.update();
 
         if (up) {
             setDirectionY(getDirectionY() - SPEED_VERTICAL_UP);
@@ -74,10 +74,6 @@ public class Player extends ImageNeutralBox {
         } else if (getY() > LIMIT_AREA_BOTTOM) {
             setY(LIMIT_AREA_BOTTOM);
         }
-    }
-
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(animation.getImage(), getX(), getY(), null);
     }
 
     public int getScore() {
