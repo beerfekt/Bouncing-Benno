@@ -38,7 +38,7 @@ public class Missile extends ImageKillBox {
         Bitmap[] images = new Bitmap[numFrames];
 
         for (int i = 0; i < images.length; i++) {
-            images[i] = Bitmap.createBitmap(immage, 0, i * height, width, height);
+            images[i] = Bitmap.createBitmap(immage, i* width, 0, width, height);
         }
         return  images;
     }
