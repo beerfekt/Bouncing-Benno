@@ -2,6 +2,7 @@ package net.beerfekt.bouncingbenno;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 
 public class Background {
@@ -29,8 +30,8 @@ public class Background {
 
         //1. Bild setzen
         canvas.drawBitmap(image,
-                x,
-                y,
+                null,
+                new Rect(0,0,GamePanel.WIDTH, GamePanel.HEIGHT),
                 null);
 
 

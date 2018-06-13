@@ -23,16 +23,25 @@ public class MBBBackground{
         land.add(image);
     }
 
-    public void removeLand
+    public void removeLand(){
+        boolean isOutside = land.get(0).isOutsideScreen();
+        while(isOutside)
+        {
+            land.remove(0);
+            isOutside = land.get(0).isOutsideScreen();
+        }
+    }
 
     public void draw(Canvas canvas)
     {
+        removeLand();
         sky.draw(canvas);
         landscape.draw(canvas);
-        for(int i = 0; i <= 2 || i < land.size()) {
+        if(land.size() >= 1) {
             land.get(0).draw(canvas);
-            land.get(1).draw(canvas);
-            land.get(2).draw(canvas);
+            if(land.size() >= 2) {
+                land.get(1).draw(canvas);
+            }
         }
     }
 }

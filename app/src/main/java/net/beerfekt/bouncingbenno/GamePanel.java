@@ -25,8 +25,8 @@ import java.util.Random;
 
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
-    public static final int WIDTH = 856,          // Abmessungen des Screens -> Bildfläche/Zeichenfläche
-            HEIGHT = 480,
+    public static final int WIDTH = 1920,          // Abmessungen des Screens -> Bildfläche/Zeichenfläche
+            HEIGHT = 1080,
             MOVESPEED = -5,       // Geschwindigkeit des Hintergrundes als Schritt
             SMOKE_DELAY = 120,    // Rauchabstände via Verzögerung
             MISSILES_DELAY = 2000; // Raketenabstände via Verzögerung
