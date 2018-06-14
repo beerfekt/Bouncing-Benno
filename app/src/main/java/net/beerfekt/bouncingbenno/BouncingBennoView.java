@@ -26,6 +26,10 @@ import java.util.Random;
 
 
 public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Callback {
+
+    private SurfaceHolder surfaceHolder;
+    private RunTimeManager gameLoop;
+
     public static final int WIDTH = 1920,          // Abmessungen des Screens -> Bildfläche/Zeichenfläche
             HEIGHT = 1080,
             MOVESPEED = -5,       // Geschwindigkeit des Hintergrundes als Schritt

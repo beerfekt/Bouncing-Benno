@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "net.beerfekt.myfirstgame"
+        applicationId "net.beerfekt.bouncingbenno"
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
