@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import net.beerfekt.bouncingbenno.manager.BackgroundManager;
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.AbstractObject;
 import net.beerfekt.bouncingbenno.objekts.game.BorderBottomPart;
@@ -30,6 +31,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
     private SurfaceHolder surfaceHolder;
     private RunTimeManager gameLoop;
+    private BackgroundManager backgroundManager;
 
     public static final int WIDTH = 1920,          // Abmessungen des Screens -> Bildfläche/Zeichenfläche
             HEIGHT = 1080,
@@ -41,7 +43,6 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     public final static Rect screen = new Rect(0, 0, WIDTH, HEIGHT);
     //Elemente
     private RunTimeManager thread;
-    private Background background;
     private Player player;
 
     //Smoke
@@ -104,7 +105,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     public void surfaceCreated(SurfaceHolder holder) {
 
         //creating elements
-        background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.grassbg1));
+        backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(getResources(), R.drawable.background_sky), 5 , BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape), 10);
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
 
         //borders
@@ -180,7 +181,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         if (player.getPlaying()) {
 
 
-            background.update();
+            backgroundManager.update();
 
             checkForCollision(bottomBorder);
 
@@ -360,7 +361,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             //Zeichenfläche auf Bildschirmgröße skalieren
             canvas.scale(scaleFactorX, scaleFactorY);
             //Hintergrund + Spielfigur zeichnen
-            background.draw(canvas);
+            backgroundManager.draw(canvas);
             player.draw(canvas);
 
             //draw the smokepuffs:
