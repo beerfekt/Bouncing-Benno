@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.AbstractObject;
 import net.beerfekt.bouncingbenno.objekts.game.BorderBottomPart;
 import net.beerfekt.bouncingbenno.objekts.game.Missile;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
+public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Callback {
     public static final int WIDTH = 1920,          // Abmessungen des Screens -> Bildfläche/Zeichenfläche
             HEIGHT = 1080,
             MOVESPEED = -5,       // Geschwindigkeit des Hintergrundes als Schritt
@@ -33,7 +34,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
     //Elemente
-    private MainThread thread;
+    private RunTimeManager thread;
     private Background background;
     private Player player;
 
@@ -67,14 +68,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private boolean newGameCreated;
 
 
-    public GamePanel(Context context) {
+    public BouncingBennoView(Context context) {
         super(context);
 
 
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
 
-        thread = new MainThread(getHolder(), this);
+        thread = new RunTimeManager(getHolder(), this);
 
         //make gamePanel focusable so it can handle events
         setFocusable(true);

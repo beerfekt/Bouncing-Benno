@@ -7,12 +7,12 @@ package net.beerfekt.bouncingbenno.objekts.game;
 
 import android.graphics.Bitmap;
 
-import net.beerfekt.bouncingbenno.GamePanel;
+import net.beerfekt.bouncingbenno.BouncingBennoView;
 import net.beerfekt.bouncingbenno.objekts.ImageJumpBox;
 
 public class BorderBottomPart extends ImageJumpBox {
 
     public BorderBottomPart(Bitmap image, int x, int y) {
-        super(x, y, GamePanel.MOVESPEED, 0, 20, 200, 30, image);
+        super(x, y, BouncingBennoView.MOVESPEED, 0, 20, 200, 30, image);
     }
 }

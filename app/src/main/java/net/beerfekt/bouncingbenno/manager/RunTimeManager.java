@@ -1,18 +1,20 @@
-package net.beerfekt.bouncingbenno;
+package net.beerfekt.bouncingbenno.manager;
 
 
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-public class MainThread extends Thread {
+import net.beerfekt.bouncingbenno.BouncingBennoView;
+
+public class RunTimeManager extends Thread {
     private int FPS = 30;
     private double averageFPS;
     private SurfaceHolder surfaceHolder;
-    private GamePanel gamePanel;
+    private BouncingBennoView gamePanel;
     private boolean running;
     public static Canvas canvas;
 
-    public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
+    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
@@ -84,16 +86,16 @@ public class MainThread extends Thread {
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-public class MainThread extends Thread
+public class RunTimeManager extends Thread
 {
     private int FPS = 30;                  // Bildrate
     private double averageFPS;             // Tatsächliche Bildrate
     private SurfaceHolder surfaceHolder;   // Oberflächen Container
     private GamePanel gamePanel;           // Spieleoberfläche
-    private boolean running;               // Schalter (on/off) für MainThread
+    private boolean running;               // Schalter (on/off) für RunTimeManager
     public static Canvas canvas;           // Zeichenfläche
 
-    public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel)
+    public RunTimeManager(SurfaceHolder surfaceHolder, GamePanel gamePanel)
     {
         super();
         this.surfaceHolder = surfaceHolder;

@@ -2,7 +2,7 @@ package net.beerfekt.bouncingbenno.objekts;
 
 import android.graphics.Rect;
 
-import net.beerfekt.bouncingbenno.GamePanel;
+import net.beerfekt.bouncingbenno.BouncingBennoView;
 
 public abstract class AbstractObject {
 
@@ -98,6 +98,6 @@ public abstract class AbstractObject {
 
     public boolean isOutsideScreen()
     {
-        return !getRectangle().intersect(new Rect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT));
+        return !getRectangle().intersect(new Rect(0, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT));
     }
 }

@@ -1,10 +1,8 @@
 package net.beerfekt.bouncingbenno.objekts.game;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 
-import net.beerfekt.bouncingbenno.GamePanel;
-import net.beerfekt.bouncingbenno.objekts.AbstractObject;
+import net.beerfekt.bouncingbenno.BouncingBennoView;
 import net.beerfekt.bouncingbenno.objekts.ImageNeutralBox;
 import net.beerfekt.bouncingbenno.objekts.properties.Animation;
 
@@ -17,8 +15,8 @@ public class Player extends ImageNeutralBox {
     //PARAMETERS FOR THE MOVEMENT / POSITION of the Player
     private static final int LIMIT_ACCELERATION = 8,                                           //höchster/niedrigster Beschleunigungswert
     //Helicopter Spielraum begrenzen (sodass dieser nicht aus Bild springt)
-    LIMIT_AREA_TOP = GamePanel.HEIGHT / 10,                         //1/8 der Canvas-Höhe ist abstand nach oben
-            LIMIT_AREA_BOTTOM = GamePanel.HEIGHT - (GamePanel.HEIGHT / 6),     //1/4 der Canvas-Höhe ist abstand nach unten
+    LIMIT_AREA_TOP = BouncingBennoView.HEIGHT / 10,                         //1/8 der Canvas-Höhe ist abstand nach oben
+            LIMIT_AREA_BOTTOM = BouncingBennoView.HEIGHT - (BouncingBennoView.HEIGHT / 6),     //1/4 der Canvas-Höhe ist abstand nach unten
             STARTPOSITION = LIMIT_AREA_BOTTOM,                            //Startposition Hubschrauber auf y achse
             SPEED_VERTICAL_UP = 6,                                            //heli geschwindigkeit aufsteigen
             SPEED_VERTICAL_DOWN = 2;                                            //heli                 absteigen

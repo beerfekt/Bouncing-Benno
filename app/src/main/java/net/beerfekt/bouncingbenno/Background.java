@@ -11,7 +11,7 @@ public class Background {
     private int x, y, dx;
 
     public Background(Bitmap res) {
-        dx = GamePanel.MOVESPEED;
+        dx = BouncingBennoView.MOVESPEED;
         image = res;
     }
 
@@ -20,7 +20,7 @@ public class Background {
         x += dx;
 
         //wenn bild aus dem bildbereich rausgeht
-        if (x < -GamePanel.WIDTH) {
+        if (x < -BouncingBennoView.WIDTH) {
             //setze position zurück
             x = 0;
         }
@@ -31,7 +31,7 @@ public class Background {
         //1. Bild setzen
         canvas.drawBitmap(image,
                 null,
-                new Rect(0,0,GamePanel.WIDTH, GamePanel.HEIGHT),
+                new Rect(0,0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT),
                 null);
 
 
@@ -41,7 +41,7 @@ public class Background {
         {
             //Lösung: 2.Bild dahinter setzen und scrollen lassen
             canvas.drawBitmap(image,
-                    x + GamePanel.WIDTH,
+                    x + BouncingBennoView.WIDTH,
                     y,
                     null);
         }

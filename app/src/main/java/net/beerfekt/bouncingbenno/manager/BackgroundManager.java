@@ -7,12 +7,12 @@ import net.beerfekt.bouncingbenno.objekts.ImageNeutralBox;
 
 import java.util.List;
 
-public class MBBBackground{
+public class BackgroundManager {
     ImageNeutralBox sky;
     ImageNeutralBox landscape;
     List<ImageNeutralBox> land;
 
-    public MBBBackground(ImageNeutralBox sky, ImageNeutralBox landscape, List<ImageNeutralBox> land) {
+    public BackgroundManager(ImageNeutralBox sky, ImageNeutralBox landscape, List<ImageNeutralBox> land) {
         this.sky = sky;
         this.landscape = landscape;
         this.land = land;
