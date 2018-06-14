@@ -105,7 +105,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     public void surfaceCreated(SurfaceHolder holder) {
 
         //creating elements
-        backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(getResources(), R.drawable.background_sky), 5 , BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape), 10);
+        backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(getResources(), R.drawable.background_sky), 1 , BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape), 3);
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
 
         //borders

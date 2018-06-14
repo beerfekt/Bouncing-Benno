@@ -24,11 +24,9 @@ public class BackgroundManager {
      */
     public BackgroundManager(Bitmap sky, int skySpeed, Bitmap landscape, int landscapeSpeed) {
         this.sky1 = new ImageNeutralBox(0, 0, -skySpeed, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, 10, sky);
-        this.sky2 = sky1;
-        sky2.setX(BouncingBennoView.WIDTH);
+        this.sky2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -skySpeed, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, 10, sky);
         this.landscape1 = new ImageNeutralBox(0, 0, -landscapeSpeed, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, 10, landscape);
-        this.landscape2 = landscape1;
-        landscape2.setX(BouncingBennoView.WIDTH);
+        this.landscape2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -landscapeSpeed, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, 10, landscape);
         this.backgroundObjects = new ArrayList<>();
     }
 
