@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -72,8 +73,8 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     private boolean newGameCreated;
 
 
-    public BouncingBennoView(Context context) {
-        super(context);
+    public BouncingBennoView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
 
         //add the callback to the surfaceholder to intercept events
