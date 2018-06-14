@@ -38,6 +38,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             MISSILES_DELAY = 2000; // Raketenabstände via Verzögerung
 
 
+    public final static Rect screen = new Rect(0, 0, WIDTH, HEIGHT);
     //Elemente
     private RunTimeManager thread;
     private Background background;
@@ -82,25 +83,20 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
         thread = new RunTimeManager(getHolder(), this);
 
-        //make gamePanel focusable so it can handle events
         setFocusable(true);
 
+        paint = getPaint();
+    }
 
-        //TODO: FALLS DAS funktionieren sollte, code so legen dass er nur einmal ausgeführt wird
-        //Style "malerei" erstellen
-        paint = new Paint();
-
+    private Paint getPaint()
+    {
+        Paint paint = new Paint();
         AssetManager assetManager = getContext().getAssets();
         Typeface army = Typeface.createFromAsset(assetManager, "fonts/army_rust.ttf");
-
-        //Typeface army = Typeface.createFromAsset(context.getAssets(),"fonts/army_rust.ttf" );
-        //Typeface army = Typeface.create(plain, Typeface.DEFAULT_BOLD);
         paint.setTypeface(army);
-        //Farbe
         paint.setColor(Color.BLACK);
         paint.setTextSize(30);
-
-
+        return  paint;
     }
 
 
@@ -196,9 +192,9 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
         } else {
             newGameCreated = false;
-        } //if getPlaying
+        }
 
-    }//update
+    }
 
 
     private void updateSmoke() {
@@ -278,7 +274,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             Missile currentMissile = missiles.get(i);
             currentMissile.update();
             //check collision between missile, other gameobject passed to the function
-            if (collision(currentMissile, player)) {
+            if (player.intersect(currentMissile)) {
                 //wenn kollidiert, rakete entfernen, player stoppen und spiel loop stoppen
                 missiles.remove(i);
                 player.setPlaying(false);
@@ -340,21 +336,9 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         );
     }
 
-    private boolean collision(AbstractObject a, AbstractObject b) {
-        //Get the boxes of the gameobjects
-        Rect collisionBoxA = a.getRectangle();
-        Rect collisionBoxB = b.getRectangle();
-
-        //Prüfen ob sie sich berühren
-        if (Rect.intersects(collisionBoxA, collisionBoxB)) {
-            return true;
-        }
-        return false;
-    }//collision
-
     private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects) {
         for (int i = 0; i < objects.size(); i++) {
-            if (collision(objects.get(i), player)) {
+            if (player.intersect(objects.get(i))) {
                 player.setPlaying(false);
                 break;
             }
@@ -412,14 +396,13 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
             canvas.restoreToCount(savedState);
         }
-    }//draw
+    }
 
     public void newGame() {
         bottomBorder.clear();
         missiles.clear();
         smoke.clear();
 
-        //TODO: resetDY() , wird das benötigt??
         player.resetDY();
         player.resetScore();
         this.renderedScoreString = Integer.toString(player.getScore());
@@ -434,5 +417,5 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     }
 
 
-}//class
+}
 

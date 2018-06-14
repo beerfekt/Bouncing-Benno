@@ -33,9 +33,10 @@ public abstract class AbstractObject {
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
 
         if (elapsed > positionDuration) {
-            x += directionX;
-            y += directionY;
-            lastFrameTime += positionDuration;
+            long fixLag = elapsed/positionDuration;
+            x +=  fixLag* directionX;
+            y += fixLag * directionY;
+            lastFrameTime += fixLag * positionDuration;
         }
     }
 
@@ -45,7 +46,12 @@ public abstract class AbstractObject {
 
     public boolean intersect(AbstractObject obj)
     {
-        return getRectangle().intersect(obj.getRectangle());
+        return intersect(obj.getRectangle());
+    }
+
+    public boolean intersect(Rect obj)
+    {
+        return getRectangle().intersect(obj);
     }
 
     public int getX() {
