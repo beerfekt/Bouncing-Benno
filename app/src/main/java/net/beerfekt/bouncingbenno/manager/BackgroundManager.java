@@ -19,14 +19,14 @@ public class BackgroundManager {
     /**
      *
      * @param sky
-     * @param skySpeed geschwindigkeit in Pixeln pro zentel sekunde
-     * @param landscape
+     * @param skyDuration wie lange es dauert bis das Bild um einen Pixel verschoben wird
+     * @param landscape wie lange es dauert bis das Bild um einen Pixel verschoben wird
      */
-    public BackgroundManager(Bitmap sky, long skySpeed, Bitmap landscape, long landscapeSpeed) {
-        this.sky1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, skySpeed, sky);
-        this.sky2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, skySpeed, sky);
-        this.landscape1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, landscapeSpeed, landscape);
-        this.landscape2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, landscapeSpeed, landscape);
+    public BackgroundManager(Bitmap sky, long skyDuration, Bitmap landscape, long landscapeDuration) {
+        this.sky1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, skyDuration, sky);
+        this.sky2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, skyDuration, sky);
+        this.landscape1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, landscapeDuration, landscape);
+        this.landscape2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, landscapeDuration, landscape);
         this.backgroundObjects = new ArrayList<>();
     }
 
