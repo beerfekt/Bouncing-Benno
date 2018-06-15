@@ -14,7 +14,7 @@ import net.beerfekt.bouncingbenno.BouncingBennoView;
 import net.beerfekt.bouncingbenno.R;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
-public class RunTimeManager extends Thread {
+public class RunTimeManager extends Thread implements SurfaceHolder.Callback{
     private int FPS = 30;
     private double averageFPS;
     private SurfaceHolder surfaceHolder;
@@ -138,6 +138,7 @@ public class RunTimeManager extends Thread {
         return false;
     }
 
+    @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         boolean retry = true;
         while (retry) {
@@ -151,12 +152,17 @@ public class RunTimeManager extends Thread {
         }
     }
 
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
         backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(bouncingBennoView.getResources(), R.drawable.background_sky), 100, BitmapFactory.decodeResource(bouncingBennoView.getResources(), R.drawable.background_landscape), 50);
         player = new Player(BitmapFactory.decodeResource(bouncingBennoView.getResources(), R.drawable.helicopter), 65, 25, 3);
         this.setRunning(true);
         this.start();
 
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }
 
     private Paint getPaint(BouncingBennoView view) {

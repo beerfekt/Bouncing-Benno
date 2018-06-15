@@ -12,7 +12,7 @@ import android.view.SurfaceView;
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 
 
-public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Callback {
+public class BouncingBennoView extends SurfaceView {
     private RunTimeManager runTimeManager;
 
     public final static int SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080;
@@ -20,32 +20,10 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
     public BouncingBennoView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        getHolder().addCallback(this);
+        runTimeManager = new RunTimeManager(getHolder(), this);
+        getHolder().addCallback(runTimeManager);
         setFocusable(true);
 
-        runTimeManager = new RunTimeManager(getHolder(), this);
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        runTimeManager.surfaceCreated(holder);
-    }
-
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-    }
-
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        runTimeManager.surfaceDestroyed(holder);
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return runTimeManager.onTouchEvent(event) ? true : super.onTouchEvent(event);
     }
 
     @Override
@@ -54,6 +32,10 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         runTimeManager.draw(canvas);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return runTimeManager.onTouchEvent(event) ? true : super.onTouchEvent(event);
+    }
 
 }
 
