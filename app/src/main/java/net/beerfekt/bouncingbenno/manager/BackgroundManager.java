@@ -22,13 +22,11 @@ public class BackgroundManager {
      * @param skySpeed geschwindigkeit in Pixeln pro zentel sekunde
      * @param landscape
      */
-    public BackgroundManager(Bitmap sky, int skySpeed, Bitmap landscape, int landscapeSpeed) {
-        this.sky1 = new ImageNeutralBox(0, 0, -skySpeed, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, 10, sky);
-        this.sky2 = sky1;
-        sky2.setX(BouncingBennoView.WIDTH);
-        this.landscape1 = new ImageNeutralBox(0, 0, -landscapeSpeed, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, 10, landscape);
-        this.landscape2 = landscape1;
-        landscape2.setX(BouncingBennoView.WIDTH);
+    public BackgroundManager(Bitmap sky, long skySpeed, Bitmap landscape, long landscapeSpeed) {
+        this.sky1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, skySpeed, sky);
+        this.sky2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, skySpeed, sky);
+        this.landscape1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, landscapeSpeed, landscape);
+        this.landscape2 = new ImageNeutralBox(BouncingBennoView.WIDTH, 0, -1, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT, landscapeSpeed, landscape);
         this.backgroundObjects = new ArrayList<>();
     }
 
