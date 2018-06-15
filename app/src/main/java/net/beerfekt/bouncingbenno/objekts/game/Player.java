@@ -15,8 +15,8 @@ public class Player extends ImageNeutralBox {
     //PARAMETERS FOR THE MOVEMENT / POSITION of the Player
     private static final int LIMIT_ACCELERATION = 8,                                           //höchster/niedrigster Beschleunigungswert
     //Helicopter Spielraum begrenzen (sodass dieser nicht aus Bild springt)
-    LIMIT_AREA_TOP = BouncingBennoView.HEIGHT / 10,                         //1/8 der Canvas-Höhe ist abstand nach oben
-            LIMIT_AREA_BOTTOM = BouncingBennoView.HEIGHT - (BouncingBennoView.HEIGHT / 6),     //1/4 der Canvas-Höhe ist abstand nach unten
+    LIMIT_AREA_TOP = BouncingBennoView.SCREEN_HEIGHT / 10,                         //1/8 der Canvas-Höhe ist abstand nach oben
+            LIMIT_AREA_BOTTOM = BouncingBennoView.SCREEN_HEIGHT - (BouncingBennoView.SCREEN_HEIGHT / 6),     //1/4 der Canvas-Höhe ist abstand nach unten
             STARTPOSITION = LIMIT_AREA_BOTTOM,                            //Startposition Hubschrauber auf y achse
             SPEED_VERTICAL_UP = 6,                                            //heli geschwindigkeit aufsteigen
             SPEED_VERTICAL_DOWN = 2;                                            //heli                 absteigen

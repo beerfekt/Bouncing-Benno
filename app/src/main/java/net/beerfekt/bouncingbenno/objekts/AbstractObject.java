@@ -104,6 +104,6 @@ public abstract class AbstractObject {
 
     public boolean isOutsideScreen()
     {
-        return !getRectangle().intersect(new Rect(0, 0, BouncingBennoView.WIDTH, BouncingBennoView.HEIGHT));
+        return !getRectangle().intersect(new Rect(0, 0, BouncingBennoView.SCREEN_WIDTH, BouncingBennoView.SCREEN_HEIGHT));
     }
 }
