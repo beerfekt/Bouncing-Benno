@@ -20,7 +20,7 @@ public class Player extends ImageNeutralBox {
     private static float START_POSITION = LIMIT_AREA_BOTTOM;
 
     public Player(Bitmap res, float w, float h, float animSpeed) {
-        super(0f, START_POSITION, 0f, 0f, w, h,  new Animation(getImagesFromOneImage(res,(int)w, (int)h, (int)animSpeed), (int)10 * 1000));
+        super(0f, START_POSITION, 0f, 0f, w, h,  new Animation(getImagesFromOneImage(res,(int)w, (int)h, (int)animSpeed), 0.5f));
 
         startTime = System.nanoTime();
 

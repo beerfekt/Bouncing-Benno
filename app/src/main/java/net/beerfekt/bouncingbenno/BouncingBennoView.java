@@ -46,6 +46,18 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     }
 
     @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        runTimeManager.setSurfaceHolder(holder);
+        synchronized (this) {
+            runTimeManager.backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(getResources(), R.drawable.background_sky), BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape));
+            runTimeManager.player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
+            runTimeManager.setRunning(true);
+            runTimeManager.start();
+        }
+
+    }
+
+    @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         boolean retry = true;
         while (retry) {
@@ -57,15 +69,6 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        runTimeManager.backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(getResources(), R.drawable.background_sky), BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape));
-        runTimeManager.player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
-        runTimeManager.setRunning(true);
-        runTimeManager.start();
-
     }
 
     @Override

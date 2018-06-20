@@ -25,16 +25,15 @@ public class RunTimeManager extends Thread{
 
     private SurfaceHolder surfaceHolder;
     private BouncingBennoView bouncingBennoView;
-    private float scaleFactorX;
-    private float scaleFactorY;
 
+    //Attributes for method run
     private long msPerFrame = 1000/25;
     private boolean running;
     private int fpsSamples[] = new int[50];
     private int samplePos = 0;
     private int samplesSum = 0;
 
-
+    //Game Objects
     public BackgroundManager backgroundManager;
     public Player player;
 
@@ -44,12 +43,9 @@ public class RunTimeManager extends Thread{
     public boolean newGameCreated;
 
     public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel) {
-        super();
         this.surfaceHolder = surfaceHolder;
         this.bouncingBennoView = gamePanel;
         paint = getPaint(gamePanel);
-        scaleFactorX = bouncingBennoView.getWidth() / (SCREEN_WIDTH * 1.f);
-        scaleFactorY = bouncingBennoView.getHeight() / (SCREEN_HEIGHT * 1.f);
     }
 
     @Override
@@ -97,30 +93,30 @@ public class RunTimeManager extends Thread{
         }
     }
 
-    public void setRunning(boolean b) {
-        running = b;
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    public void setSurfaceHolder(SurfaceHolder surfaceHolder) {
+        this.surfaceHolder = surfaceHolder;
     }
 
     public void draw(Canvas canvas) {
-        if (canvas != null) {
-            final int savedState = canvas.save();
+        float scaleFactorX = bouncingBennoView.getWidth() / (SCREEN_WIDTH * 1.f);
+        float scaleFactorY = bouncingBennoView.getHeight() / (SCREEN_HEIGHT * 1.f);
+        canvas.scale(scaleFactorX, scaleFactorY);
 
-            canvas.scale(scaleFactorX, scaleFactorY);
-            backgroundManager.draw(canvas);
-            player.draw(canvas);
+        backgroundManager.draw(canvas);
+        player.draw(canvas);
 
-            int score = player.getScore();
-
-            if (score % 20 == 0) {
-                if (score != this.renderedScore || this.renderedScoreString == null) {
-                    this.renderedScore = score;
-                    this.renderedScoreString = Integer.toString(this.renderedScore);
-                }
+        int score = player.getScore();
+        if (score % 20 == 0) {
+            if (score != this.renderedScore || this.renderedScoreString == null) {
+                this.renderedScore = score;
+                this.renderedScoreString = Integer.toString(this.renderedScore);
             }
-            canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
-
-            canvas.restoreToCount(savedState);
         }
+        canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
     }
 
     private Paint getPaint(BouncingBennoView view) {
