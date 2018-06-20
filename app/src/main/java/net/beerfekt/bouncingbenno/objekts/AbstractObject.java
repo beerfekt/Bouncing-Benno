@@ -2,108 +2,94 @@ package net.beerfekt.bouncingbenno.objekts;
 
 import android.graphics.Rect;
 
-import net.beerfekt.bouncingbenno.BouncingBennoView;
+import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 
-public abstract class AbstractObject {
+public abstract class AbstractObject{
 
-    private int x;
-    private int y;
-    private int directionX;
-    private int directionY;
-    private int width;
-    private int height;
-    private long positionDuration;
-    private long lastFrameTime;
+    private float x;
+    private float y;
+    private float directionX;
+    private float directionY;
+    private float width;
+    private float height;
 
-    public AbstractObject(int x, int y, int directionX, int directionY, int width, int height, long positionDuration) {
+    public AbstractObject(float x, float y, float directionX, float directionY, float width, float height) {
         this.x = x;
         this.y = y;
         this.directionX = directionX;
         this.directionY = directionY;
         this.width = width;
         this.height = height;
-        this.positionDuration = positionDuration;
-        this.lastFrameTime = System.currentTimeMillis();
     }
 
-    public void update() {
-        if (positionDuration == -1) {
-            return;
-        }
-        long elapsed = (System.currentTimeMillis() - lastFrameTime);
-
-        if (elapsed > positionDuration) {
-            long fixLag = elapsed/positionDuration;
-            x +=  fixLag* directionX;
-            y += fixLag * directionY;
-            lastFrameTime += fixLag * positionDuration;
-        }
+    public void update(float numberOfFrames) {
+        x += numberOfFrames * directionX;
+        y += numberOfFrames * directionY;
     }
 
     public Rect getRectangle() {
-        return new Rect(x, y, x + width, y + height);
+        return new Rect((int) x, (int) y, (int) (x + width), (int) (y + height));
     }
 
-    public boolean intersect(AbstractObject obj)
-    {
+    public boolean intersect(AbstractObject obj) {
         return intersect(obj.getRectangle());
     }
 
-    public boolean intersect(Rect obj)
-    {
+    public boolean intersect(Rect obj) {
         return getRectangle().intersect(obj);
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
     }
 
-    public int getDirectionX() {
+    public float getDirectionX() {
         return directionX;
     }
 
-    public void setDirectionX(int directionX) {
+    public void setDirectionX(float directionX) {
         this.directionX = directionX;
     }
 
-    public int getDirectionY() {
+    public float getDirectionY() {
         return directionY;
     }
 
-    public void setDirectionY(int directionY) {
+    public void setDirectionY(float directionY) {
         this.directionY = directionY;
     }
 
-    public int getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(float width) {
         this.width = width;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 
-    public boolean isOutsideScreen()
-    {
-        return !getRectangle().intersect(new Rect(0, 0, BouncingBennoView.SCREEN_WIDTH, BouncingBennoView.SCREEN_HEIGHT));
+    public boolean isOutsideScreen() {
+        return !getRectangle().intersect(RunTimeManager.SCREEN_RECT);
     }
+
+    abstract AbstractObject copy();
 }

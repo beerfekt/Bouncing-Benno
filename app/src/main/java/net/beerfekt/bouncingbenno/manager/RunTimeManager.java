@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -14,77 +15,84 @@ import net.beerfekt.bouncingbenno.BouncingBennoView;
 import net.beerfekt.bouncingbenno.R;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
-public class RunTimeManager extends Thread implements SurfaceHolder.Callback{
-    private int FPS = 30;
-    private double averageFPS;
+import java.util.Optional;
+
+public class RunTimeManager extends Thread{
+
+
+    public final static float SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080;
+    public final static Rect SCREEN_RECT = new Rect(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
+
     private SurfaceHolder surfaceHolder;
     private BouncingBennoView bouncingBennoView;
+    private float scaleFactorX;
+    private float scaleFactorY;
+
+    private long msPerFrame = 1000/25;
     private boolean running;
-    public static Canvas canvas;
+    private int fpsSamples[] = new int[50];
+    private int samplePos = 0;
+    private int samplesSum = 0;
 
 
-    private BackgroundManager backgroundManager;
-    private Player player;
+    public BackgroundManager backgroundManager;
+    public Player player;
 
     private String renderedScoreString;
     private int renderedScore;
     private Paint paint;
-    private boolean newGameCreated;
+    public boolean newGameCreated;
 
     public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.bouncingBennoView = gamePanel;
         paint = getPaint(gamePanel);
+        scaleFactorX = bouncingBennoView.getWidth() / (SCREEN_WIDTH * 1.f);
+        scaleFactorY = bouncingBennoView.getHeight() / (SCREEN_HEIGHT * 1.f);
     }
 
     @Override
     public void run() {
-        long startTime;
-        long timeMillis;
-        long waitTime;
-        long totalTime = 0;
-        int frameCount = 0;
-        long targetTime = 1000 / FPS;
+        Canvas canvas = null;
+        long thisFrameTime;
+        long lastFrameTime = System.currentTimeMillis();
+        float framesSinceLastFrame;
 
         while (running) {
-            startTime = System.nanoTime();
-            canvas = null;
-
-            //try locking the canvas for pixel editing
             try {
-                canvas = this.surfaceHolder.lockCanvas();
+                canvas = surfaceHolder.lockCanvas();
+                if(canvas == null) continue;
                 synchronized (surfaceHolder) {
-                    update();
-                    this.bouncingBennoView.draw(canvas);
+                    draw(canvas);
                 }
-            } catch (Exception e) {
-            } finally {
-                if (canvas != null) {
-                    try {
-                        surfaceHolder.unlockCanvasAndPost(canvas);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+                thisFrameTime = System.currentTimeMillis();
+                framesSinceLastFrame = (float)(thisFrameTime - lastFrameTime)/msPerFrame;
+
+                float fps = 1000.0f / ((float)samplesSum / fpsSamples.length);
+                canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
 
 
-            timeMillis = (System.nanoTime() - startTime) / 1000000;
-            waitTime = targetTime - timeMillis;
+                update(framesSinceLastFrame);
 
-            try {
-                this.sleep(waitTime);
-            } catch (Exception e) {
-            }
+                thisFrameTime = System.currentTimeMillis();
+                int timeDelta = (int) (thisFrameTime - lastFrameTime);
 
-            totalTime += System.nanoTime() - startTime;
-            frameCount++;
-            if (frameCount == FPS) {
-                averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
-                frameCount = 0;
-                totalTime = 0;
-                System.out.println(averageFPS);
+                samplesSum -= fpsSamples[samplePos];
+                fpsSamples[samplePos++] = timeDelta;
+                samplesSum += timeDelta;
+                samplePos %= fpsSamples.length;
+
+                lastFrameTime = thisFrameTime;
+
+                if(timeDelta<msPerFrame)
+                    sleep(msPerFrame - timeDelta);
+
+            }catch(InterruptedException e){
+
+            }finally {
+                if (canvas != null)
+                    surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
     }
@@ -94,9 +102,6 @@ public class RunTimeManager extends Thread implements SurfaceHolder.Callback{
     }
 
     public void draw(Canvas canvas) {
-        final float scaleFactorX = bouncingBennoView.getWidth() / (BouncingBennoView.SCREEN_WIDTH * 1.f);
-        final float scaleFactorY = bouncingBennoView.getHeight() / (BouncingBennoView.SCREEN_HEIGHT * 1.f);
-
         if (canvas != null) {
             final int savedState = canvas.save();
 
@@ -112,13 +117,13 @@ public class RunTimeManager extends Thread implements SurfaceHolder.Callback{
                     this.renderedScoreString = Integer.toString(this.renderedScore);
                 }
             }
-            canvas.drawText("Score: " + this.renderedScoreString, BouncingBennoView.SCREEN_WIDTH / 2, BouncingBennoView.SCREEN_HEIGHT / 8, paint);
+            canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
 
             canvas.restoreToCount(savedState);
         }
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public Boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (!player.getPlaying() && !newGameCreated) {
                 newGame();
@@ -138,32 +143,6 @@ public class RunTimeManager extends Thread implements SurfaceHolder.Callback{
         return false;
     }
 
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        while (retry) {
-            try {
-                this.setRunning(false);
-                this.join();
-                retry = false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(bouncingBennoView.getResources(), R.drawable.background_sky), 100, BitmapFactory.decodeResource(bouncingBennoView.getResources(), R.drawable.background_landscape), 50);
-        player = new Player(BitmapFactory.decodeResource(bouncingBennoView.getResources(), R.drawable.helicopter), 65, 25, 3);
-        this.setRunning(true);
-        this.start();
-
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-    }
 
     private Paint getPaint(BouncingBennoView view) {
         Paint paint = new Paint();
@@ -175,16 +154,15 @@ public class RunTimeManager extends Thread implements SurfaceHolder.Callback{
         return paint;
     }
 
-    public void update() {
+    public void update(float numberOfFrames) {
 
         if (player.getPlaying()) {
-            backgroundManager.update();
-            player.update();
+            backgroundManager.update(numberOfFrames);
+            player.update(numberOfFrames);
         } else {
             newGameCreated = false;
         }
     }
-
 
     public void newGame() {
         player.resetDY();

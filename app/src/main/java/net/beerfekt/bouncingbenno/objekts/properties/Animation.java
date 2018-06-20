@@ -1,28 +1,28 @@
 package net.beerfekt.bouncingbenno.objekts.properties;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 
 public class Animation {
     private Bitmap[] images;
-    private int currentImage;
-    private long imageDuration;
-    private long lastFrameTime;
+    private float currentImage;
+    private float animationSpeed;
     private boolean playedOnce;
 
     /**
      * @param images        Die Bilder in der Animations Reihnfolge
-     * @param imageDuration Die Anzeigezeit eines Bildes in Millisekunden
+     * @param animationSpeed Die Anzeigezeit eines Bildes in Millisekunden
      */
-    public Animation(Bitmap[] images, long imageDuration) {
+    public Animation(Bitmap[] images, float animationSpeed) {
         this.images = images;
         this.currentImage = 0;
-        this.imageDuration = imageDuration;
-        this.lastFrameTime = System.currentTimeMillis();
+        this.animationSpeed = animationSpeed;
         this.playedOnce = false;
     }
 
     public Bitmap getImage() {
-        return images[currentImage];
+        return images[(int) currentImage];
     }
 
     /**
@@ -35,20 +35,19 @@ public class Animation {
     /**
      * Berechnet das Aktuelle Bild der Animation
      */
-    public void update() {
-        if (imageDuration == -1) {
-            return;
+    public void update(float numberOfFrames) {
+        currentImage += animationSpeed * numberOfFrames;
+        if (currentImage >= images.length) {
+            currentImage -= images.length;
+            playedOnce = true;
         }
-        long elapsed = (System.currentTimeMillis() - lastFrameTime);
+    }
 
-        if (elapsed > imageDuration) {
-            currentImage++;
-            lastFrameTime += imageDuration;
-            if (currentImage == images.length) {
-                currentImage = 0;
-                playedOnce = true;
-            }
-        }
+    public void draw(Canvas canvas, Rect rect) {
+        canvas.drawBitmap(getImage(), null, rect, null);
+    }
 
+    public Animation copy() {
+        return new Animation(images,animationSpeed);
     }
 }

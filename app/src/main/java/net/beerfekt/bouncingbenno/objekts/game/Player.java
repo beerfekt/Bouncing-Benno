@@ -2,7 +2,7 @@ package net.beerfekt.bouncingbenno.objekts.game;
 
 import android.graphics.Bitmap;
 
-import net.beerfekt.bouncingbenno.BouncingBennoView;
+import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.ImageNeutralBox;
 import net.beerfekt.bouncingbenno.objekts.properties.Animation;
 
@@ -12,40 +12,35 @@ public class Player extends ImageNeutralBox {
     private boolean up, playing;
     private long startTime;
 
-    //PARAMETERS FOR THE MOVEMENT / POSITION of the Player
-    private static final int LIMIT_ACCELERATION = 8,                                           //höchster/niedrigster Beschleunigungswert
-    //Helicopter Spielraum begrenzen (sodass dieser nicht aus Bild springt)
-    LIMIT_AREA_TOP = BouncingBennoView.SCREEN_HEIGHT / 10,                         //1/8 der Canvas-Höhe ist abstand nach oben
-            LIMIT_AREA_BOTTOM = BouncingBennoView.SCREEN_HEIGHT - (BouncingBennoView.SCREEN_HEIGHT / 6),     //1/4 der Canvas-Höhe ist abstand nach unten
-            STARTPOSITION = LIMIT_AREA_BOTTOM,                            //Startposition Hubschrauber auf y achse
-            SPEED_VERTICAL_UP = 6,                                            //heli geschwindigkeit aufsteigen
-            SPEED_VERTICAL_DOWN = 2;                                            //heli                 absteigen
+    private static final int LIMIT_ACCELERATION = 8,
+            LIMIT_AREA_TOP = (int) (RunTimeManager.SCREEN_HEIGHT / 10),
+            LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 6)),
+            SPEED_VERTICAL_UP = 6,
+            SPEED_VERTICAL_DOWN = 2;
+    private static float START_POSITION = LIMIT_AREA_BOTTOM;
 
-
-    public Player(Bitmap res, int w, int h, int numFrames) {
-        super(0, STARTPOSITION, 0, 0, w, h, 30, new Animation(getImagesFromOneImage(res, w,h,numFrames), 10 * 1000));
+    public Player(Bitmap res, float w, float h, float animSpeed) {
+        super(0f, START_POSITION, 0f, 0f, w, h,  new Animation(getImagesFromOneImage(res,(int)w, (int)h, (int)animSpeed), (int)10 * 1000));
 
         startTime = System.nanoTime();
 
     }
 
-    private static Bitmap[] getImagesFromOneImage(Bitmap immage, int width, int height, int numFrames)
-    {
+    private static Bitmap[] getImagesFromOneImage(Bitmap immage, int width, int height, int numFrames) {
         Bitmap[] images = new Bitmap[numFrames];
 
         for (int i = 0; i < images.length; i++) {
-            images[i] = Bitmap.createBitmap(immage, i* width, 0, width, height);
+            images[i] = Bitmap.createBitmap(immage, i * width, 0, width, height);
         }
-        return  images;
+        return images;
     }
 
     public void setUp(boolean b) {
         up = b;
     }
 
-    @Override
-    public void update() {
-        super.update();
+    public void update(float numberOfFrames) {
+        super.update(numberOfFrames);
         long elapsed = (System.nanoTime() - startTime) / 1000000;
         if (elapsed > 100) {
             score++;
@@ -95,7 +90,7 @@ public class Player extends ImageNeutralBox {
     }
 
     public void resetStartPosition() {
-        setY(STARTPOSITION);
+        setY(START_POSITION);
     }
 
 }//

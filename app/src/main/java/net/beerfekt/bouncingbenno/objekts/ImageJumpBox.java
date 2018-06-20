@@ -10,23 +10,28 @@ public class ImageJumpBox extends HiddenJumpBox implements Drawable {
 
     private Animation animation;
 
-    public ImageJumpBox(int x, int y, int directionX, int directionY, int width, int height, long positionDuration, Bitmap image) {
-        this(x, y, directionX, directionY, width, height, positionDuration, new Animation(new Bitmap[]{image}, -1));
+    public ImageJumpBox(float x, float y, float directionX, float directionY, float width, float height, Bitmap image) {
+        this(x, y, directionX, directionY, width, height, new Animation(new Bitmap[]{image}, 0));
     }
 
-    public ImageJumpBox(int x, int y, int directionX, int directionY, int width, int height, long positionDuration, Animation animation) {
-        super(x, y, directionX, directionY, width, height, positionDuration);
+    public ImageJumpBox(float x, float y, float directionX, float directionY, float width, float height, Animation animation) {
+        super(x, y, directionX, directionY, width, height);
         this.animation = animation;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(animation.getImage(), null, getRectangle(), null);
+        animation.draw(canvas, getRectangle());
     }
 
     @Override
-    public void update() {
-        super.update();
-        animation.update();
+    public void update(float numberOfFrames) {
+        super.update(numberOfFrames);
+        animation.update(numberOfFrames);
+    }
+
+    @Override
+    public ImageJumpBox copy() {
+        return new ImageJumpBox(getX(), getY(), getDirectionX(), getDirectionY(), getWidth(), getHeight(), animation.copy());
     }
 }

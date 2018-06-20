@@ -16,36 +16,18 @@ public class BackgroundManager {
     ImageNeutralBox landscape2;
     List<ImageNeutralBox> backgroundObjects;
 
-    /**
-     *
-     * @param sky
-     * @param skyDuration wie lange es dauert bis das Bild um einen Pixel verschoben wird
-     * @param landscape wie lange es dauert bis das Bild um einen Pixel verschoben wird
-     */
-    public BackgroundManager(Bitmap sky, long skyDuration, Bitmap landscape, long landscapeDuration) {
-        this.sky1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.SCREEN_WIDTH, BouncingBennoView.SCREEN_HEIGHT, skyDuration, sky);
-        this.sky2 = new ImageNeutralBox(BouncingBennoView.SCREEN_WIDTH, 0, -1, 0, BouncingBennoView.SCREEN_WIDTH, BouncingBennoView.SCREEN_HEIGHT, skyDuration, sky);
-        this.landscape1 = new ImageNeutralBox(0, 0, -1, 0, BouncingBennoView.SCREEN_WIDTH, BouncingBennoView.SCREEN_HEIGHT, landscapeDuration, landscape);
-        this.landscape2 = new ImageNeutralBox(BouncingBennoView.SCREEN_WIDTH, 0, -1, 0, BouncingBennoView.SCREEN_WIDTH, BouncingBennoView.SCREEN_HEIGHT, landscapeDuration, landscape);
+    public BackgroundManager(Bitmap sky, Bitmap landscape) {
+        this.sky1 = new ImageNeutralBox(0f, 0f, -1f, 0f, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, sky);
+        this.sky2 = sky1.copy();
+        sky2.setX(RunTimeManager.SCREEN_WIDTH);
+        this.landscape1 = new ImageNeutralBox(0, 0, -1, 0, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, landscape);
+        this.landscape2 = landscape1.copy();
+        landscape2.setX(RunTimeManager.SCREEN_WIDTH);
         this.backgroundObjects = new ArrayList<>();
     }
 
-    private void removeLand(){
-        reposBackground(sky1);
-        reposBackground(sky2);
-        reposBackground(landscape1);
-        reposBackground(landscape2);
-        ArrayList<ImageNeutralBox> toBeRemoved = new ArrayList<>();
-        for(ImageNeutralBox box : backgroundObjects) {
-            if(!box.intersect(BouncingBennoView.SCREEN_RECT)) {
-                toBeRemoved.add(box);
-            }
-        }
-        backgroundObjects.removeAll(toBeRemoved);
-    }
-
     private void reposBackground(ImageNeutralBox box) {
-        if(!box.intersect(BouncingBennoView.SCREEN_RECT) && box.getX()+box.getWidth() < 0) {
+        if(!box.intersect(RunTimeManager.SCREEN_RECT) && box.getX()+box.getWidth() < 0) {
             box.setX(box.getX() + 2 * box.getWidth());
         }
     }
@@ -57,20 +39,34 @@ public class BackgroundManager {
         landscape1.draw(canvas);
         landscape2.draw(canvas);
         for(ImageNeutralBox box : backgroundObjects) {
-            if(box.intersect(BouncingBennoView.SCREEN_RECT)) {
+            if(box.intersect(RunTimeManager.SCREEN_RECT)) {
                 box.draw(canvas);
             }
         }
     }
 
-    public void update() {
-        sky1.update();
-        sky2.update();
-        landscape1.update();
-        landscape2.update();
+    public void update(float numberOfFrames) {
+        sky1.update(numberOfFrames);
+        sky2.update(numberOfFrames);
+        landscape1.update(numberOfFrames);
+        landscape2.update(numberOfFrames);
         for(ImageNeutralBox box : backgroundObjects) {
-            box.update();
+            box.update(numberOfFrames);
         }
         removeLand();
+    }
+
+    private void removeLand(){
+        reposBackground(sky1);
+        reposBackground(sky2);
+        reposBackground(landscape1);
+        reposBackground(landscape2);
+        ArrayList<ImageNeutralBox> toBeRemoved = new ArrayList<>();
+        for(ImageNeutralBox box : backgroundObjects) {
+            if(box.isOutsideScreen()) {
+                toBeRemoved.add(box);
+            }
+        }
+        backgroundObjects.removeAll(toBeRemoved);
     }
 }
