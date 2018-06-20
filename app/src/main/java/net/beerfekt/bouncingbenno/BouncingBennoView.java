@@ -2,6 +2,7 @@ package net.beerfekt.bouncingbenno;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -11,6 +12,8 @@ import android.view.SurfaceView;
 import net.beerfekt.bouncingbenno.manager.BackgroundManager;
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
+
+import java.util.ArrayList;
 
 
 public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Callback{
@@ -49,7 +52,13 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     public void surfaceCreated(SurfaceHolder holder) {
         runTimeManager.setSurfaceHolder(holder);
         synchronized (this) {
-            runTimeManager.backgroundManager = new BackgroundManager(BitmapFactory.decodeResource(getResources(), R.drawable.background_sky), BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape));
+            ArrayList<Bitmap> backgroundObjects = new ArrayList<>();
+            backgroundObjects.add(BitmapFactory.decodeResource(getResources(), R.drawable.background_baum));
+            backgroundObjects.add(BitmapFactory.decodeResource(getResources(), R.drawable.background_haus));
+            runTimeManager.backgroundManager = new BackgroundManager(   BitmapFactory.decodeResource(getResources(), R.drawable.background_sky),
+                                                                        BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape),
+                                                                        BitmapFactory.decodeResource(getResources(), R.drawable.background_street),
+                                                                        backgroundObjects);
             runTimeManager.player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
             runTimeManager.setRunning(true);
             runTimeManager.start();
