@@ -123,27 +123,6 @@ public class RunTimeManager extends Thread{
         }
     }
 
-    public Boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (!player.getPlaying() && !newGameCreated) {
-                newGame();
-                player.setPlaying(true);
-                player.setUp(true);
-            } else {
-                player.setUp(true);
-            }
-            return true;
-        }
-
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            player.setUp(false);
-            return true;
-        }
-
-        return false;
-    }
-
-
     private Paint getPaint(BouncingBennoView view) {
         Paint paint = new Paint();
         AssetManager assetManager = view.getContext().getAssets();
