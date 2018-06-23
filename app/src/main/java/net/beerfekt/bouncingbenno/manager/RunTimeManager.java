@@ -160,9 +160,8 @@ public class RunTimeManager extends Thread{
             newGame();
             player.setPlaying(true);
             player.setUp(true);
-        } else {
-            player.setUp(true);
         }
+        player.setUp(true);
         return true;
     }
 
