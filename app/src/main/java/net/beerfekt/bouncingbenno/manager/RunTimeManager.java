@@ -42,9 +42,11 @@ public class RunTimeManager extends Thread{
     private Paint paint;
     public boolean newGameCreated;
 
-    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel) {
+    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player) {
         this.surfaceHolder = surfaceHolder;
         this.bouncingBennoView = gamePanel;
+        this.backgroundManager = backgroundManager;
+        this.player = player;
         paint = getPaint(gamePanel);
     }
 
@@ -93,14 +95,6 @@ public class RunTimeManager extends Thread{
         }
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
-    public void setSurfaceHolder(SurfaceHolder surfaceHolder) {
-        this.surfaceHolder = surfaceHolder;
-    }
-
     public void draw(Canvas canvas) {
         float scaleFactorX = bouncingBennoView.getWidth() / (SCREEN_WIDTH * 1.f);
         float scaleFactorY = bouncingBennoView.getHeight() / (SCREEN_HEIGHT * 1.f);
@@ -145,5 +139,35 @@ public class RunTimeManager extends Thread{
         this.renderedScoreString = Integer.toString(player.getScore());
         player.resetStartPosition();
         newGameCreated = true;
+    }
+
+    public void stopGame() {
+        running = false;
+        try {
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startGame() {
+        running = true;
+        start();
+    }
+
+    public boolean onTouchEventDown() {
+        if (!player.getPlaying() && !newGameCreated) {
+            newGame();
+            player.setPlaying(true);
+            player.setUp(true);
+        } else {
+            player.setUp(true);
+        }
+        return true;
+    }
+
+    public boolean onTouchEventUp() {
+        player.setUp(false);
+        return true;
     }
 }

@@ -16,72 +16,69 @@ import net.beerfekt.bouncingbenno.objekts.game.Player;
 import java.util.ArrayList;
 
 
-public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Callback{
+public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Callback {
     private RunTimeManager runTimeManager;
+
+    private Bitmap background_sky;
+    private Bitmap background_landscape;
+    private Bitmap background_street;
+    private Bitmap background_baum;
+    private Bitmap background_haus;
+    private Bitmap helicopter;
 
     public BouncingBennoView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        runTimeManager = new RunTimeManager(getHolder(), this);
-
         getHolder().addCallback(this);
         setFocusable(true);
-    }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (!runTimeManager.player.getPlaying() && !runTimeManager.newGameCreated) {
-                runTimeManager.newGame();
-                runTimeManager.player.setPlaying(true);
-                runTimeManager.player.setUp(true);
-            } else {
-                runTimeManager.player.setUp(true);
-            }
-            return true;
-        }
-
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            runTimeManager.player.setUp(false);
-            return true;
-        }
-        return false;
+        background_sky = BitmapFactory.decodeResource(context.getResources(), R.drawable.background_sky);
+        background_landscape = BitmapFactory.decodeResource(context.getResources(), R.drawable.background_landscape);
+        background_street = BitmapFactory.decodeResource(context.getResources(), R.drawable.background_street);
+        background_baum = BitmapFactory.decodeResource(getResources(), R.drawable.background_baum);
+        background_haus = BitmapFactory.decodeResource(getResources(), R.drawable.background_haus);
+        helicopter = BitmapFactory.decodeResource(getResources(), R.drawable.helicopter);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        runTimeManager.setSurfaceHolder(holder);
         synchronized (this) {
             ArrayList<Bitmap> backgroundObjects = new ArrayList<>();
-            backgroundObjects.add(BitmapFactory.decodeResource(getResources(), R.drawable.background_baum));
-            backgroundObjects.add(BitmapFactory.decodeResource(getResources(), R.drawable.background_haus));
-            runTimeManager.backgroundManager = new BackgroundManager(   BitmapFactory.decodeResource(getResources(), R.drawable.background_sky),
-                                                                        BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape),
-                                                                        BitmapFactory.decodeResource(getResources(), R.drawable.background_street),
-                                                                        backgroundObjects);
-            runTimeManager.player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 200, 100, 0.5f);
-            runTimeManager.setRunning(true);
-            runTimeManager.start();
-        }
+            backgroundObjects.add(background_baum);
+            backgroundObjects.add(background_haus);
 
+            BackgroundManager backgroundManager = new BackgroundManager(background_sky, background_landscape, background_street, backgroundObjects);
+
+            Player player = new Player(helicopter, 200, 100, 0.5f);
+
+            runTimeManager = new RunTimeManager(holder, this, backgroundManager, player);
+            runTimeManager.startGame();
+        }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        while (retry) {
-            try {
-                runTimeManager.setRunning(false);
-                runTimeManager.join();
-                retry = false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        synchronized (this) {
+            if (runTimeManager != null) {
+                runTimeManager.stopGame();
             }
+            runTimeManager = null;
         }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            return runTimeManager.onTouchEventDown();
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            return runTimeManager.onTouchEventUp();
+        }
+        return false;
     }
 }
 
