@@ -20,17 +20,17 @@ public class Player extends ImageNeutralBox {
     private static float START_POSITION = LIMIT_AREA_BOTTOM;
 
     public Player(Bitmap res, float w, float h, float animSpeed) {
-        super(0f, START_POSITION, 0f, 0f, w, h,  new Animation(getImagesFromOneImage(res,(int)w, (int)h, (int)animSpeed), 0.5f));
+        super(10f, START_POSITION, 0f, 0f, w, h,  new Animation(getImagesFromOneImage(res, 3), animSpeed));
 
         startTime = System.nanoTime();
 
     }
 
-    private static Bitmap[] getImagesFromOneImage(Bitmap immage, int width, int height, int numFrames) {
+    private static Bitmap[] getImagesFromOneImage(Bitmap immage, int numFrames) {
         Bitmap[] images = new Bitmap[numFrames];
 
-        for (int i = 0; i < images.length; i++) {
-            images[i] = Bitmap.createBitmap(immage, i * width, 0, width, height);
+        for (int i = 0; i < numFrames; i++) {
+            images[i] = Bitmap.createBitmap(immage, i * immage.getWidth()/numFrames, 0, immage.getWidth()/numFrames, immage.getHeight());
         }
         return images;
     }

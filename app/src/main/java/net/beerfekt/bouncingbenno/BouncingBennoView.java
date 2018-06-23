@@ -59,7 +59,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
                                                                         BitmapFactory.decodeResource(getResources(), R.drawable.background_landscape),
                                                                         BitmapFactory.decodeResource(getResources(), R.drawable.background_street),
                                                                         backgroundObjects);
-            runTimeManager.player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
+            runTimeManager.player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 200, 100, 0.5f);
             runTimeManager.setRunning(true);
             runTimeManager.start();
         }
