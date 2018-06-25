@@ -70,7 +70,6 @@ public class BackgroundManager {
             lastFrameTime += objectsWaitTime;
             objectsWaitTime = rand.nextInt(3001)+2000;
             onScreenObjects.add(new ImageNeutralBox(RunTimeManager.SCREEN_WIDTH-1, (float) rand.nextInt(144)+350, -1f, 0f, 200f, 300f, objects.get(rand.nextInt(2))));
-            System.out.println("size: " + onScreenObjects.size());
         }
 
         for (ImageNeutralBox box : onScreenObjects) {

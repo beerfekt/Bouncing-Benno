@@ -12,11 +12,16 @@ public class Player extends ImageNeutralBox {
     private boolean up, playing;
     private long startTime;
 
+    private float jumpStrength = 75f;
+    private float weight = 5f;
+    private boolean jumping = false;
+
     private static final int LIMIT_ACCELERATION = 8,
             LIMIT_AREA_TOP = (int) (RunTimeManager.SCREEN_HEIGHT / 10),
-            LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 6)),
-            SPEED_VERTICAL_UP = 6,
-            SPEED_VERTICAL_DOWN = 2;
+            LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4)),
+            SPEED_VERTICAL_UP = 10,
+            SPEED_VERTICAL_DOWN = 10;
+
     private static float START_POSITION = LIMIT_AREA_BOTTOM;
 
     public Player(Bitmap res, float w, float h, float animSpeed) {
@@ -41,31 +46,51 @@ public class Player extends ImageNeutralBox {
 
     public void update(float numberOfFrames) {
         super.update(numberOfFrames);
+
+        //Score
         long elapsed = (System.nanoTime() - startTime) / 1000000;
         if (elapsed > 100) {
             score++;
             startTime = System.nanoTime();
         }
 
-        if (up) {
-            setDirectionY(getDirectionY() - SPEED_VERTICAL_UP);
-        } else {
-            setDirectionY(getDirectionY() + SPEED_VERTICAL_DOWN);
+        //Jump
+        if (jumping){
+            if (getY() >= LIMIT_AREA_BOTTOM) {
+                jumping = false;
+                setY(LIMIT_AREA_BOTTOM);
+            }
+            setDirectionY(-jumpStrength);
+            jumpStrength -= weight;
+        }
+        else if (up){
+            jumping = true;
         }
 
-        //Acceleration limits
-        if (getDirectionY() > LIMIT_ACCELERATION) setDirectionY(LIMIT_ACCELERATION - 5);
-        if (getDirectionY() < -LIMIT_ACCELERATION) setDirectionY(-LIMIT_ACCELERATION);
-
-        //increase the height of helicopter
-        // add the calculated height of the acceleration
-        setY(getY() + getDirectionY() * 2);
-
-        //Height limits
-        if (getY() < LIMIT_AREA_TOP) {
-            setY(LIMIT_AREA_TOP);
-        } else if (getY() > LIMIT_AREA_BOTTOM) {
+        else {
             setY(LIMIT_AREA_BOTTOM);
+            setDirectionY(0);
+            jumpStrength = 75f;
+        }
+    }
+
+    public void jump (){
+        if (jumping){
+            if (getY() >= LIMIT_AREA_BOTTOM) {
+                jumping = false;
+                setY(LIMIT_AREA_BOTTOM);
+            }
+            setDirectionY(-jumpStrength);
+            jumpStrength -= weight;
+        }
+        else if (up){
+            jumping = true;
+        }
+
+        else {
+            setY(LIMIT_AREA_BOTTOM);
+            setDirectionY(0);
+            jumpStrength = 75f;
         }
     }
 
