@@ -27,15 +27,6 @@ public class Player extends ImageNeutralBox {
         startTime = System.nanoTime();
     }
 
-    private static Bitmap[] getImagesFromOneImage(Bitmap image, int numFrames) {
-        Bitmap[] images = new Bitmap[numFrames];
-
-        for (int i = 0; i < numFrames; i++) {
-            images[i] = Bitmap.createBitmap(image, i * image.getWidth()/numFrames, 0, image.getWidth()/numFrames, image.getHeight());
-        }
-        return images;
-    }
-
     public void setUp(boolean b) {
         up = b;
     }
@@ -66,7 +57,7 @@ public class Player extends ImageNeutralBox {
 
         else {
             setY(LIMIT_AREA_BOTTOM);
-            setDirectionY(0);
+            resetDY();
             jumpStrength = 75f;
         }
     }

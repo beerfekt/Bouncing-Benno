@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 
 import net.beerfekt.bouncingbenno.BouncingBennoView;
 import net.beerfekt.bouncingbenno.R;
+import net.beerfekt.bouncingbenno.objekts.game.Emy_Einhorn;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class RunTimeManager extends Thread{
     //Game Objects
     public BackgroundManager backgroundManager;
     public Player player;
+    public MonsterManager monsterManager;
 
     private String renderedScoreString;
     private int renderedScore;
@@ -101,6 +103,7 @@ public class RunTimeManager extends Thread{
         canvas.scale(scaleFactorX, scaleFactorY);
 
         backgroundManager.draw(canvas);
+        //monsterManager.draw(canvas);
         player.draw(canvas);
 
         int score = player.getScore();
@@ -127,6 +130,7 @@ public class RunTimeManager extends Thread{
 
         if (player.getPlaying()) {
             backgroundManager.update(numberOfFrames);
+            //monsterManager.update(numberOfFrames);
             player.update(numberOfFrames);
         } else {
             newGameCreated = false;
