@@ -73,27 +73,7 @@ public class Player extends ImageNeutralBox {
             jumpStrength = 75f;
         }
     }
-
-    public void jump (){
-        if (jumping){
-            if (getY() >= LIMIT_AREA_BOTTOM) {
-                jumping = false;
-                setY(LIMIT_AREA_BOTTOM);
-            }
-            setDirectionY(-jumpStrength);
-            jumpStrength -= weight;
-        }
-        else if (up){
-            jumping = true;
-        }
-
-        else {
-            setY(LIMIT_AREA_BOTTOM);
-            setDirectionY(0);
-            jumpStrength = 75f;
-        }
-    }
-
+    
     public int getScore() {
         return score;
     }
