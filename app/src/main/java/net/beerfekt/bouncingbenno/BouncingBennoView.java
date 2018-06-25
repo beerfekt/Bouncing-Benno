@@ -52,7 +52,12 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         background_haus1 = getBitmap(R.drawable.ic_haus);
         background_haus2 = getBitmap(R.drawable.ic_haus2);
         overlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.texture_canvas_opacity_40);
+
+        //Player
         benno = getBitmap(R.drawable.ic_benno);
+
+        //MonsterManager
+        emy = getBitmap(R.drawable.ic_emy_einhorn);
     }
 
     private Bitmap getBitmap(int drawableRes) {
@@ -73,6 +78,10 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             backgroundObjects.add(background_haus1);
             backgroundObjects.add(background_haus2);
             BackgroundManager backgroundManager = new BackgroundManager(overlay ,background_sky, background_landscape1, background_landscape2, background_street, backgroundObjects);
+
+            ArrayList<Bitmap> monster = new ArrayList<>();
+            monster.add(emy);
+            MonsterManager monsterManager = new MonsterManager(monster);
 
             Player player = new Player(benno, 141.25f,127.5f, benno);
 
