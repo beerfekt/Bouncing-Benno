@@ -44,11 +44,12 @@ public class RunTimeManager extends Thread{
     private Paint paint;
     public boolean newGameCreated;
 
-    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player) {
+    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager) {
         this.surfaceHolder = surfaceHolder;
         this.bouncingBennoView = gamePanel;
         this.backgroundManager = backgroundManager;
         this.player = player;
+        this.monsterManager = monsterManager;
         paint = getPaint(gamePanel);
     }
 
@@ -103,7 +104,7 @@ public class RunTimeManager extends Thread{
         canvas.scale(scaleFactorX, scaleFactorY);
 
         backgroundManager.draw(canvas);
-        //monsterManager.draw(canvas);
+        monsterManager.draw(canvas);
         player.draw(canvas);
 
         int score = player.getScore();
@@ -127,10 +128,9 @@ public class RunTimeManager extends Thread{
     }
 
     public void update(float numberOfFrames) {
-
         if (player.getPlaying()) {
             backgroundManager.update(numberOfFrames);
-            //monsterManager.update(numberOfFrames);
+            monsterManager.update(numberOfFrames);
             player.update(numberOfFrames);
         } else {
             newGameCreated = false;

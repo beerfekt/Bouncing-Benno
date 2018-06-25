@@ -72,7 +72,7 @@ public class BackgroundManager {
     }
 
     public void update(float numberOfFrames) {
-        //overlay.update(0);
+        overlay.update(0);
         sky1.update(3);
         sky2.update(3);
         landscape1_1.update(4);
@@ -81,8 +81,8 @@ public class BackgroundManager {
         landscape2_2.update(6);
         street1.update(15);
         street2.update(15);
-        long elapsed = (System.currentTimeMillis() - lastFrameTime);
 
+        long elapsed = (System.currentTimeMillis() - lastFrameTime);
         if (elapsed > objectsWaitTime) {
             lastFrameTime += objectsWaitTime;
             objectsWaitTime = rand.nextInt(3001) + 2000;

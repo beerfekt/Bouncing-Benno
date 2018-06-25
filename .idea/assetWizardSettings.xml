@@ -19,11 +19,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="102" />
-                            <entry key="outputName" value="ic_benno" />
+                            <entry key="height" value="330" />
+                            <entry key="outputName" value="ic_emy_einhorn" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Eric\Desktop\GATAV\grafiken_svg_fonts\mail\svg\benno\benno.svg" />
-                            <entry key="width" value="113" />
+                            <entry key="sourceFile" value="C:\Users\Eric\Desktop\GATAV\grafiken_svg_fonts\mail\svg\emy_einhorn\emy_einhorn.svg" />
+                            <entry key="width" value="312" />
                           </map>
                         </option>
                       </PersistentState>
