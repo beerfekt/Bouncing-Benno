@@ -1,7 +1,10 @@
 package net.beerfekt.bouncingbenno.objekts.game;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 
+import net.beerfekt.bouncingbenno.R;
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.ImageNeutralBox;
 import net.beerfekt.bouncingbenno.objekts.properties.Animation;
@@ -16,26 +19,19 @@ public class Player extends ImageNeutralBox {
     private float weight = 5f;
     private boolean jumping = false;
 
-    private static final int LIMIT_ACCELERATION = 8,
-            LIMIT_AREA_TOP = (int) (RunTimeManager.SCREEN_HEIGHT / 10),
-            LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4)),
-            SPEED_VERTICAL_UP = 10,
-            SPEED_VERTICAL_DOWN = 10;
-
+    private static final int LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4));
     private static float START_POSITION = LIMIT_AREA_BOTTOM;
 
-    public Player(Bitmap res, float w, float h, float animSpeed) {
-        super(10f, START_POSITION, 0f, 0f, w, h,  new Animation(getImagesFromOneImage(res, 3), animSpeed));
-
+    public Player(Bitmap res, float w, float h, Bitmap benno) {
+        super(200f, START_POSITION, 0f, 0f, w, h, benno);
         startTime = System.nanoTime();
-
     }
 
-    private static Bitmap[] getImagesFromOneImage(Bitmap immage, int numFrames) {
+    private static Bitmap[] getImagesFromOneImage(Bitmap image, int numFrames) {
         Bitmap[] images = new Bitmap[numFrames];
 
         for (int i = 0; i < numFrames; i++) {
-            images[i] = Bitmap.createBitmap(immage, i * immage.getWidth()/numFrames, 0, immage.getWidth()/numFrames, immage.getHeight());
+            images[i] = Bitmap.createBitmap(image, i * image.getWidth()/numFrames, 0, image.getWidth()/numFrames, image.getHeight());
         }
         return images;
     }
@@ -65,6 +61,7 @@ public class Player extends ImageNeutralBox {
         }
         else if (up){
             jumping = true;
+            setY(getY() + 0.01f);
         }
 
         else {
@@ -73,7 +70,7 @@ public class Player extends ImageNeutralBox {
             jumpStrength = 75f;
         }
     }
-    
+
     public int getScore() {
         return score;
     }
