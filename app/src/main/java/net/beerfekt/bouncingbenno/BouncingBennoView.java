@@ -46,7 +46,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         setFocusable(true);
 
         //BackgroundManager
-        background_sky = getBitmap(R.drawable.ci_himmel);
+        background_sky = getBitmap(R.drawable.ic_himmel);
         background_landscape1 = getBitmap(R.drawable.ic_berge1);
         background_landscape2 = getBitmap(R.drawable.ic_berge2);
         background_street = getBitmap(R.drawable.ic_strasse);
@@ -114,11 +114,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            return runTimeManager.onTouchEventDown();
-        }
-
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            return runTimeManager.onTouchEventUp();
+            return runTimeManager.onTouchEvent();
         }
         return false;
     }

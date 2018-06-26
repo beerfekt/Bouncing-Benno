@@ -13,9 +13,11 @@ import android.view.SurfaceHolder;
 
 import net.beerfekt.bouncingbenno.BouncingBennoView;
 import net.beerfekt.bouncingbenno.R;
+import net.beerfekt.bouncingbenno.objekts.AbstractObject;
 import net.beerfekt.bouncingbenno.objekts.game.Emy_Einhorn;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class RunTimeManager extends Thread{
@@ -103,9 +105,12 @@ public class RunTimeManager extends Thread{
         float scaleFactorY = bouncingBennoView.getHeight() / (SCREEN_HEIGHT * 1.f);
         canvas.scale(scaleFactorX, scaleFactorY);
 
+        canvas.drawColor(Color.WHITE);
         backgroundManager.draw(canvas);
         monsterManager.draw(canvas);
         player.draw(canvas);
+
+        checkForCollision(monsterManager.getonScreenMonster());
 
         int score = player.getScore();
         if (score % 20 == 0) {
@@ -115,6 +120,8 @@ public class RunTimeManager extends Thread{
             }
         }
         canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
+
+
     }
 
     private Paint getPaint(BouncingBennoView view) {
@@ -159,18 +166,33 @@ public class RunTimeManager extends Thread{
         start();
     }
 
-    public boolean onTouchEventDown() {
+    public boolean onTouchEvent() {
         if (!player.getPlaying() && !newGameCreated) {
             newGame();
             player.setPlaying(true);
-            player.setUp(true);
         }
-        player.setUp(true);
+        player.setUpTrue();
         return true;
     }
 
-    public boolean onTouchEventUp() {
-        player.setUp(false);
-        return true;
+    private boolean collision(AbstractObject a, AbstractObject b)
+    {
+        Rect collisionBoxA = a.getRectangle();
+        Rect collisionBoxB = b.getRectangle();
+
+        if (Rect.intersects(collisionBoxA, collisionBoxB)){
+            return true;
+        }
+        return false;
+    }
+
+    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects) {
+        for (int i = 0; i < objects.size(); i++) {
+            if (collision(objects.get(i), player)) {
+                monsterManager.removeAllMonster();
+                player.setPlaying(false);
+                break;
+            }
+        }
     }
 }

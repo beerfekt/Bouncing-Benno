@@ -27,8 +27,8 @@ public class Player extends ImageNeutralBox {
         startTime = System.nanoTime();
     }
 
-    public void setUp(boolean b) {
-        up = b;
+    public void setUpTrue (){
+        up = true;
     }
 
     public void update(float numberOfFrames) {
@@ -43,7 +43,7 @@ public class Player extends ImageNeutralBox {
 
         //Jump
         if (jumping){
-            if (getY() >= LIMIT_AREA_BOTTOM) {
+            if (getY() > LIMIT_AREA_BOTTOM) {
                 jumping = false;
                 setY(LIMIT_AREA_BOTTOM);
             }
@@ -52,7 +52,8 @@ public class Player extends ImageNeutralBox {
         }
         else if (up){
             jumping = true;
-            setY(getY() + 0.01f);
+            setY(LIMIT_AREA_BOTTOM - 1f);
+            up = false;
         }
 
         else {

@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class MonsterManager {
     List<Bitmap> monster;
-    List<ImageKillBox> onScreenMonster = new ArrayList<>();
+    ArrayList<ImageKillBox> onScreenMonster = new ArrayList<>();
 
     private static Random rand = new Random();
     private int objectsWaitTime = 4000;
@@ -41,9 +41,11 @@ public class MonsterManager {
             Bitmap randMonster = monster.get(rand);
 
             if (rand == 0)
-                onScreenMonster.add(new Emy_Einhorn(randMonster.getWidth()/4, randMonster.getHeight()/4 ,monster.get(rand)));
+                onScreenMonster.add(new Emy_Einhorn(randMonster.getWidth()/5, randMonster.getHeight()/5 ,monster.get(rand)));
             if (rand == 1)
-                onScreenMonster.add(new Flying_Flo(randMonster.getWidth()/2.5f, randMonster.getHeight()/2.5f ,monster.get(rand)));
+                onScreenMonster.add(new Flying_Flo(randMonster.getWidth()/3.5f, randMonster.getHeight()/3.5f ,monster.get(rand)));
+
+
         }
 
         for (ImageKillBox box : onScreenMonster) {
@@ -52,6 +54,10 @@ public class MonsterManager {
             }
         }
         removeMonster();
+    }
+
+    public ArrayList<ImageKillBox> getonScreenMonster(){
+        return onScreenMonster;
     }
 
     private void removeMonster() {
@@ -64,5 +70,11 @@ public class MonsterManager {
         onScreenMonster.removeAll(toBeRemoved);
     }
 
-
+    public void removeAllMonster() {
+        ArrayList<ImageKillBox> toBeRemoved = new ArrayList<>();
+        for (ImageKillBox box : onScreenMonster){
+                toBeRemoved.add(box);
+        }
+        onScreenMonster.removeAll(toBeRemoved);
+    }
 }
