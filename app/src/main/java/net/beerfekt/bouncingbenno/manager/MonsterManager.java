@@ -50,7 +50,7 @@ public class MonsterManager {
 
         for (ImageKillBox box : onScreenMonster) {
             if (box.intersect(RunTimeManager.SCREEN_RECT)) {
-                box.update(20);
+                box.update(numberOfFrames);
             }
         }
         removeMonster();

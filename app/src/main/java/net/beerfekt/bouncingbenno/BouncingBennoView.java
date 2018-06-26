@@ -53,7 +53,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         background_baum = getBitmap(R.drawable.ic_baum);
         background_haus1 = getBitmap(R.drawable.ic_haus);
         background_haus2 = getBitmap(R.drawable.ic_haus2);
-        overlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.texture_canvas_opacity_40);
+        overlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.texture_paper_opacity_50);
 
         //Player
         benno = getBitmap(R.drawable.ic_benno);

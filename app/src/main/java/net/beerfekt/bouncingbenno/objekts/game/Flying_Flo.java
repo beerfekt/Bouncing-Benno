@@ -14,7 +14,7 @@ public class Flying_Flo extends ImageKillBox {
     private float weigth =  0.13f + rand.nextFloat() * (0.2f - 0.13f);
 
     public Flying_Flo(float w, float h, Bitmap flo) {
-        super(RunTimeManager.SCREEN_WIDTH-1, rand.nextInt(400)+115, -1.5f, 0f, w, h, flo);
+        super(RunTimeManager.SCREEN_WIDTH-1, rand.nextInt(400)+115, -25f, 0f, w, h, flo);
     }
 
     public void update(float numberOfFrames) {
