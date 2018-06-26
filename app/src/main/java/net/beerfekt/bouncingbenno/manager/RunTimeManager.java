@@ -103,6 +103,7 @@ public class RunTimeManager extends Thread{
         float scaleFactorY = bouncingBennoView.getHeight() / (SCREEN_HEIGHT * 1.f);
         canvas.scale(scaleFactorX, scaleFactorY);
 
+        canvas.drawColor(Color.WHITE);
         backgroundManager.draw(canvas);
         monsterManager.draw(canvas);
         player.draw(canvas);
@@ -115,6 +116,8 @@ public class RunTimeManager extends Thread{
             }
         }
         canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
+
+
     }
 
     private Paint getPaint(BouncingBennoView view) {
