@@ -159,18 +159,13 @@ public class RunTimeManager extends Thread{
         start();
     }
 
-    public boolean onTouchEventDown() {
+    public boolean onTouchEvent() {
         if (!player.getPlaying() && !newGameCreated) {
             newGame();
             player.setPlaying(true);
-            player.setUp(true);
         }
-        player.setUp(true);
+        player.setUpTrue();
         return true;
     }
 
-    public boolean onTouchEventUp() {
-        player.setUp(false);
-        return true;
-    }
 }
