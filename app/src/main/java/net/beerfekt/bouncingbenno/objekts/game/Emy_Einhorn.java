@@ -9,7 +9,7 @@ public class Emy_Einhorn extends ImageKillBox {
 
 
     public Emy_Einhorn(float w, float h, Bitmap emy){
-        super(RunTimeManager.SCREEN_WIDTH-1, 720, -1.5f, 0f , w, h, emy);
+        super(RunTimeManager.SCREEN_WIDTH-1, 720, -25f, 0f , w, h, emy);
     }
 
     public void update(float numberOfFrames) {

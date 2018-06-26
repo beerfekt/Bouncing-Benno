@@ -27,21 +27,21 @@ public class BackgroundManager {
 
 
     public BackgroundManager(Bitmap overlay, Bitmap sky, Bitmap landscape1, Bitmap landscape2, Bitmap street, ArrayList<Bitmap> objects) {
-        this.overlay=new ImageNeutralBox(0f, 0f, -1f, 0f, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, overlay);
+        this.overlay=new ImageNeutralBox(0f, 0f, 0f, 0f, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, overlay);
 
         this.sky1 = new ImageNeutralBox(0f, 0f, -1f, 0f, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, sky);
         this.sky2 = sky1.copy();
         sky2.setX(RunTimeManager.SCREEN_WIDTH);
 
-        this.landscape1_1 = new ImageNeutralBox(0f, 200, -1f, 0f, RunTimeManager.SCREEN_WIDTH, landscape1.getHeight()*2, landscape1);
+        this.landscape1_1 = new ImageNeutralBox(0f, 200, -3f, 0f, RunTimeManager.SCREEN_WIDTH, landscape1.getHeight()*2, landscape1);
         this.landscape1_2 = landscape1_1.copy();
         landscape1_2.setX(RunTimeManager.SCREEN_WIDTH);
 
-        this.landscape2_1 = new ImageNeutralBox(0f, 350, -1f, 0f, RunTimeManager.SCREEN_WIDTH, landscape2.getHeight(), landscape2);
+        this.landscape2_1 = new ImageNeutralBox(0f, 350, -6f, 0f, RunTimeManager.SCREEN_WIDTH, landscape2.getHeight(), landscape2);
         this.landscape2_2 = landscape2_1.copy();
         landscape2_1.setX(RunTimeManager.SCREEN_WIDTH);
 
-        this.street1 = new ImageNeutralBox(0f,800, -1f, 0f, RunTimeManager.SCREEN_WIDTH, street.getHeight(), street);
+        this.street1 = new ImageNeutralBox(0f,800, -12f, 0f, RunTimeManager.SCREEN_WIDTH, street.getHeight(), street);
         this.street2 = street1.copy();
         street2.setX(RunTimeManager.SCREEN_WIDTH);
 
@@ -72,26 +72,26 @@ public class BackgroundManager {
     }
 
     public void update(float numberOfFrames) {
-        overlay.update(0);
-        sky1.update(3);
-        sky2.update(3);
-        landscape1_1.update(4);
-        landscape1_2.update(4);
-        landscape2_1.update(6);
-        landscape2_2.update(6);
-        street1.update(15);
-        street2.update(15);
+        sky1.update(numberOfFrames);
+        sky2.update(numberOfFrames);
+        landscape1_1.update(numberOfFrames);
+        landscape1_2.update(numberOfFrames);
+        landscape2_1.update(numberOfFrames);
+        landscape2_2.update(numberOfFrames);
+        street1.update(numberOfFrames);
+        street2.update(numberOfFrames);
+
 
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
         if (elapsed > objectsWaitTime) {
             lastFrameTime += objectsWaitTime;
             objectsWaitTime = rand.nextInt(3001) + 2000;
             Bitmap randObject = objects.get(rand.nextInt(3));
-            onScreenObjects.add(new ImageNeutralBox(RunTimeManager.SCREEN_WIDTH - 1, (float) rand.nextInt(144) + 350, -1f, 0f, 200, 300, randObject));
+            onScreenObjects.add(new ImageNeutralBox(RunTimeManager.SCREEN_WIDTH - 1, (float) rand.nextInt(144) + 350, -6f, 0f, 200, 300, randObject));
         }
 
         for (ImageNeutralBox box : onScreenObjects) {
-            box.update(6);
+            box.update(numberOfFrames);
         }
         removeLand();
     }
