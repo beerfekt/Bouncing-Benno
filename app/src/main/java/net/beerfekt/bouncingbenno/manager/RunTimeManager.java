@@ -13,9 +13,11 @@ import android.view.SurfaceHolder;
 
 import net.beerfekt.bouncingbenno.BouncingBennoView;
 import net.beerfekt.bouncingbenno.R;
+import net.beerfekt.bouncingbenno.objekts.AbstractObject;
 import net.beerfekt.bouncingbenno.objekts.game.Emy_Einhorn;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class RunTimeManager extends Thread{
@@ -108,6 +110,8 @@ public class RunTimeManager extends Thread{
         monsterManager.draw(canvas);
         player.draw(canvas);
 
+        checkForCollision(monsterManager.getonScreenMonster());
+
         int score = player.getScore();
         if (score % 20 == 0) {
             if (score != this.renderedScore || this.renderedScoreString == null) {
@@ -171,4 +175,24 @@ public class RunTimeManager extends Thread{
         return true;
     }
 
+    private boolean collision(AbstractObject a, AbstractObject b)
+    {
+        Rect collisionBoxA = a.getRectangle();
+        Rect collisionBoxB = b.getRectangle();
+
+        if (Rect.intersects(collisionBoxA, collisionBoxB)){
+            return true;
+        }
+        return false;
+    }
+
+    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects) {
+        for (int i = 0; i < objects.size(); i++) {
+            if (collision(objects.get(i), player)) {
+                monsterManager.removeAllMonster();
+                player.setPlaying(false);
+                break;
+            }
+        }
+    }
 }
