@@ -46,7 +46,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         setFocusable(true);
 
         //BackgroundManager
-        background_sky = getBitmap(R.drawable.background_sky);
+        background_sky = getBitmap(R.drawable.ci_himmel);
         background_landscape1 = getBitmap(R.drawable.ic_berge1);
         background_landscape2 = getBitmap(R.drawable.ic_berge2);
         background_street = getBitmap(R.drawable.ic_strasse);
