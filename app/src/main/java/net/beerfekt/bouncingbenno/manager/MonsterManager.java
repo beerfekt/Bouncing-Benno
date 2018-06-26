@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import net.beerfekt.bouncingbenno.objekts.ImageKillBox;
+import net.beerfekt.bouncingbenno.objekts.game.Emy_Einhorn;
+import net.beerfekt.bouncingbenno.objekts.game.Flying_Flo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +36,14 @@ public class MonsterManager {
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
         if (elapsed > objectsWaitTime) {
             lastFrameTime += objectsWaitTime;
-            objectsWaitTime = rand.nextInt(3001) + 2000;
-            Bitmap randObject = monster.get(rand.nextInt(1));
-            onScreenMonster.add(new ImageKillBox(RunTimeManager.SCREEN_WIDTH-1, 740, -1f, 0f, randObject.getWidth()/5, randObject.getHeight()/5, randObject));
+            objectsWaitTime = rand.nextInt(1501) + 1000;
+            int rand = MonsterManager.rand.nextInt(2);
+            Bitmap randMonster = monster.get(rand);
+
+            if (rand == 0)
+                onScreenMonster.add(new Emy_Einhorn(randMonster.getWidth()/4, randMonster.getHeight()/4 ,monster.get(rand)));
+            if (rand == 1)
+                onScreenMonster.add(new Flying_Flo(randMonster.getWidth()/2.5f, randMonster.getHeight()/2.5f ,monster.get(rand)));
         }
 
         for (ImageKillBox box : onScreenMonster) {

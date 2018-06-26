@@ -31,12 +31,14 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     private Bitmap background_baum;
     private Bitmap background_haus1;
     private Bitmap background_haus2;
-    private Bitmap benno;
     private Bitmap overlay;
 
     //Player
+    private Bitmap benno;
+
     //MonsterManager
     private Bitmap emy;
+    private Bitmap flo;
 
     public BouncingBennoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -58,6 +60,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
         //MonsterManager
         emy = getBitmap(R.drawable.ic_emy_einhorn);
+        flo = getBitmap(R.drawable.ic_flying_flo2);
     }
 
     private Bitmap getBitmap(int drawableRes) {
@@ -73,16 +76,20 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         synchronized (this) {
+            //BackgroundManager
             ArrayList<Bitmap> backgroundObjects = new ArrayList<>();
             backgroundObjects.add(background_baum);
             backgroundObjects.add(background_haus1);
             backgroundObjects.add(background_haus2);
             BackgroundManager backgroundManager = new BackgroundManager(overlay ,background_sky, background_landscape1, background_landscape2, background_street, backgroundObjects);
 
+            //MonsterManager
             ArrayList<Bitmap> monster = new ArrayList<>();
             monster.add(emy);
+            monster.add(flo);
             MonsterManager monsterManager = new MonsterManager(monster);
 
+            //Player
             Player player = new Player(benno, 141.25f,127.5f, benno);
 
             runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager);

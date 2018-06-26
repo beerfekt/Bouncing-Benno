@@ -15,8 +15,8 @@ public class Player extends ImageNeutralBox {
     private boolean up, playing;
     private long startTime;
 
-    private float jumpStrength = 75f;
-    private float weight = 5f;
+    private float jumpStrength = 90f;
+    private float weight = 8f;
     private boolean jumping = false;
 
     private static final int LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4));
@@ -58,7 +58,7 @@ public class Player extends ImageNeutralBox {
         else {
             setY(LIMIT_AREA_BOTTOM);
             resetDY();
-            jumpStrength = 75f;
+            jumpStrength = 90f;
         }
     }
 
