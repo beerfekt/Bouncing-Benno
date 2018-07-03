@@ -6,9 +6,10 @@ import android.graphics.Rect;
 
 public class Animation {
     private Bitmap[] images;
-    private float currentImage;
+    private int currentImage;
     private float animationSpeed;
     private boolean playedOnce;
+    private float time;
 
     /**
      * @param images        Die Bilder in der Animations Reihnfolge
@@ -22,7 +23,7 @@ public class Animation {
     }
 
     public Bitmap getImage() {
-        return images[(int) currentImage];
+        return images[currentImage];
     }
 
     /**
@@ -36,10 +37,12 @@ public class Animation {
      * Berechnet das Aktuelle Bild der Animation
      */
     public void update(float numberOfFrames) {
-        currentImage += animationSpeed * numberOfFrames;
-        if (currentImage >= images.length) {
-            currentImage -= images.length;
-            playedOnce = true;
+        time += animationSpeed * numberOfFrames;
+        if (time >= 100) {
+            time = 0;
+            currentImage++;
+            if (currentImage >= images.length)
+                currentImage = 0;
         }
     }
 
