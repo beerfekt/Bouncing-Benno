@@ -1,19 +1,20 @@
 package net.beerfekt.bouncingbenno.objekts.game;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.graphics.Matrix;
 
-import net.beerfekt.bouncingbenno.R;
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.ImageNeutralBox;
 import net.beerfekt.bouncingbenno.objekts.properties.Animation;
+
 
 
 public class Player extends ImageNeutralBox {
     private int score;
     private boolean up, playing;
     private long startTime;
+
+    private Animation normalAnimation;
 
     private float jumpStrength = 90f;
     private float weight = 8f;
@@ -22,12 +23,16 @@ public class Player extends ImageNeutralBox {
     private static final int LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4));
     private static float START_POSITION = LIMIT_AREA_BOTTOM;
 
-    public Player(Bitmap res, float w, float h, Bitmap benno) {
+    private Bitmap[] death;
+    private boolean died;
+
+    public Player(float w, float h, Animation benno, Bitmap[] explosion) {
         super(200f, START_POSITION, 0f, 0f, w, h, benno);
         startTime = System.nanoTime();
+        death = explosion;
     }
 
-    public void setUpTrue (){
+    public void setUpTrue() {
         up = true;
     }
 
@@ -42,25 +47,39 @@ public class Player extends ImageNeutralBox {
         }
 
         //Jump
-        if (jumping){
+        if (jumping) {
             if (getY() > LIMIT_AREA_BOTTOM) {
                 jumping = false;
                 setY(LIMIT_AREA_BOTTOM);
+            } else {
+                setDirectionY(-jumpStrength);
+                jumpStrength -= weight;
             }
-            setDirectionY(-jumpStrength);
-            jumpStrength -= weight;
-        }
-        else if (up){
+        } else if (up) {
             jumping = true;
-            setY(LIMIT_AREA_BOTTOM - 1f);
+            setY(LIMIT_AREA_BOTTOM);
             up = false;
-        }
-
-        else {
+        } else {
             setY(LIMIT_AREA_BOTTOM);
             resetDY();
             jumpStrength = 90f;
         }
+    }
+
+    public void deathAnimation() {
+        Animation d = new Animation(death, 10);
+        setAnimation(d);
+        died = true;
+    }
+
+    public void revive(){
+        setAnimation(normalAnimation);
+        died = false;
+        getAnimation().setPlayedOnce(false);
+    }
+
+    public boolean isDied() {
+        return died;
     }
 
     public int getScore() {
@@ -86,5 +105,4 @@ public class Player extends ImageNeutralBox {
     public void resetStartPosition() {
         setY(START_POSITION);
     }
-
-}//
+}

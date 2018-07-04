@@ -28,10 +28,19 @@ public class ImageKillBox extends HiddenKillBox implements Drawable {
     public void update(float numberOfFrames) {
         super.update(numberOfFrames);
         animation.update(numberOfFrames);
+
     }
 
     @Override
     public ImageKillBox copy() {
         return new ImageKillBox(getX(), getY(), getDirectionX(), getDirectionY(), getWidth(), getHeight(), animation.copy());
+    }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
+    public Animation getAnimation() {
+        return animation;
     }
 }

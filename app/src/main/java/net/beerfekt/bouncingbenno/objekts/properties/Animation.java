@@ -43,6 +43,7 @@ public class Animation {
             currentImage++;
             if (currentImage >= images.length)
                 currentImage = 0;
+                playedOnce = true;
         }
     }
 
@@ -52,5 +53,9 @@ public class Animation {
 
     public Animation copy() {
         return new Animation(images,animationSpeed);
+    }
+
+    public void setPlayedOnce(boolean playedOnce) {
+        this.playedOnce = playedOnce;
     }
 }
