@@ -31,6 +31,10 @@ public abstract class AbstractObject{
         return new Rect((int) x, (int) y, (int) (x + width), (int) (y + height));
     }
 
+    public Rect getHitbox() {
+        return new Rect((int) x, (int) y, (int) ((x + width)*0.9), (int) ((y + height)*0.9));
+    }
+
     public boolean intersect(AbstractObject obj) {
         return intersect(obj.getRectangle());
     }

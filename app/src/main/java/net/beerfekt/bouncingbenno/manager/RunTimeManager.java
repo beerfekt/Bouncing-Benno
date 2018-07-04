@@ -2,23 +2,18 @@ package net.beerfekt.bouncingbenno.manager;
 
 
 import android.content.res.AssetManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import net.beerfekt.bouncingbenno.BouncingBennoView;
-import net.beerfekt.bouncingbenno.R;
 import net.beerfekt.bouncingbenno.objekts.AbstractObject;
-import net.beerfekt.bouncingbenno.objekts.game.Emy_Einhorn;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class RunTimeManager extends Thread{
 
@@ -110,7 +105,7 @@ public class RunTimeManager extends Thread{
         monsterManager.draw(canvas);
         player.draw(canvas);
 
-        checkForCollision(monsterManager.getonScreenMonster());
+        checkForCollision(monsterManager.getOnScreenMonster());
 
         int score = player.getScore();
         if (score % 20 == 0) {
@@ -177,8 +172,8 @@ public class RunTimeManager extends Thread{
 
     private boolean collision(AbstractObject a, AbstractObject b)
     {
-        Rect collisionBoxA = a.getRectangle();
-        Rect collisionBoxB = b.getRectangle();
+        Rect collisionBoxA = a.getHitbox();
+        Rect collisionBoxB = b.getHitbox();
 
         if (Rect.intersects(collisionBoxA, collisionBoxB)){
             return true;

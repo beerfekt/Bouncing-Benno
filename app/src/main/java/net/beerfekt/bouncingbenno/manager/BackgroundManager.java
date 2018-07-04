@@ -29,19 +29,19 @@ public class BackgroundManager {
     public BackgroundManager(Bitmap overlay, Bitmap sky, Bitmap landscape1, Bitmap landscape2, Bitmap street, ArrayList<Bitmap> objects) {
         this.overlay=new ImageNeutralBox(0f, 0f, 0f, 0f, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, overlay);
 
-        this.sky1 = new ImageNeutralBox(0f, 0f, -1f, 0f, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, sky);
+        this.sky1 = new ImageNeutralBox(0f, 0f, -3f, 0f, RunTimeManager.SCREEN_WIDTH, RunTimeManager.SCREEN_HEIGHT, sky);
         this.sky2 = sky1.copy();
         sky2.setX(RunTimeManager.SCREEN_WIDTH);
 
-        this.landscape1_1 = new ImageNeutralBox(0f, 200, -3f, 0f, RunTimeManager.SCREEN_WIDTH, landscape1.getHeight()*2, landscape1);
+        this.landscape1_1 = new ImageNeutralBox(0f, 200, -5f, 0f, RunTimeManager.SCREEN_WIDTH, landscape1.getHeight()*2, landscape1);
         this.landscape1_2 = landscape1_1.copy();
         landscape1_2.setX(RunTimeManager.SCREEN_WIDTH);
 
-        this.landscape2_1 = new ImageNeutralBox(0f, 350, -6f, 0f, RunTimeManager.SCREEN_WIDTH, landscape2.getHeight(), landscape2);
+        this.landscape2_1 = new ImageNeutralBox(0f, 350, -10f, 0f, RunTimeManager.SCREEN_WIDTH, landscape2.getHeight(), landscape2);
         this.landscape2_2 = landscape2_1.copy();
         landscape2_1.setX(RunTimeManager.SCREEN_WIDTH);
 
-        this.street1 = new ImageNeutralBox(0f,800, -12f, 0f, RunTimeManager.SCREEN_WIDTH, street.getHeight(), street);
+        this.street1 = new ImageNeutralBox(0f,800, -20f, 0f, RunTimeManager.SCREEN_WIDTH, street.getHeight(), street);
         this.street2 = street1.copy();
         street2.setX(RunTimeManager.SCREEN_WIDTH);
 
