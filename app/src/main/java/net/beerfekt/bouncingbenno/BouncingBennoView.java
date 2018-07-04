@@ -121,11 +121,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
             //MonsterManager
             ArrayList<Bitmap> monster = new ArrayList<>();
-            //monster.add(emy);
-            //monster.add(flo);
-            //monster.add(hans);
             monster.add(rio);
-            //monster.add(rolph);
             MonsterManager monsterManager = new MonsterManager(monster, emy, flo, hans, rolph);
 
             //Player

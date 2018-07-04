@@ -16,8 +16,8 @@ public class Player extends ImageNeutralBox {
 
     private Animation normalAnimation;
 
-    private float jumpStrength = 30f;
-    private float weight = 1.5f;
+    private float jumpStrength = 46f;
+    private float weight = 3.5f;
     private boolean jumping = false;
 
     private static final int LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4));
@@ -30,6 +30,7 @@ public class Player extends ImageNeutralBox {
         super(200f, START_POSITION, 0f, 0f, w, h, benno);
         startTime = System.nanoTime();
         death = explosion;
+        normalAnimation = benno;
     }
 
     public void setUpTrue() {
@@ -66,7 +67,7 @@ public class Player extends ImageNeutralBox {
         } else {
             setY(LIMIT_AREA_BOTTOM);
             resetDY();
-            jumpStrength = 30f;
+            jumpStrength = 50f;
         }
     }
 
