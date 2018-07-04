@@ -52,8 +52,12 @@ public class Player extends ImageNeutralBox {
                 jumping = false;
                 setY(LIMIT_AREA_BOTTOM);
             } else {
-                setDirectionY(-jumpStrength);
-                jumpStrength -= weight;
+                for(int i = 0 ; i < numberOfFrames ; i++) {
+                    jumpStrength();
+                    if(i != numberOfFrames-1) {
+                        setY(getY() + getDirectionY());
+                    }
+                }
             }
         } else if (up) {
             jumping = true;
@@ -64,6 +68,11 @@ public class Player extends ImageNeutralBox {
             resetDY();
             jumpStrength = 90f;
         }
+    }
+
+    private void jumpStrength() {
+        setDirectionY(-jumpStrength);
+        jumpStrength -= weight;
     }
 
     public void deathAnimation() {
