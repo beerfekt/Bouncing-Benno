@@ -2,6 +2,8 @@ package net.beerfekt.bouncingbenno.manager;
 
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,22 +12,23 @@ import android.graphics.Typeface;
 import android.view.SurfaceHolder;
 
 import net.beerfekt.bouncingbenno.BouncingBennoView;
+import net.beerfekt.bouncingbenno.R;
 import net.beerfekt.bouncingbenno.objekts.AbstractObject;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
 import java.util.ArrayList;
 
-public class RunTimeManager extends Thread{
+public class RunTimeManager extends Thread {
 
 
     public final static float SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080;
-    public final static Rect SCREEN_RECT = new Rect(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
+    public final static Rect SCREEN_RECT = new Rect(0, 0, (int) SCREEN_WIDTH, (int) SCREEN_HEIGHT);
 
     private SurfaceHolder surfaceHolder;
     private BouncingBennoView bouncingBennoView;
 
     //Attributes for method run
-    private long msPerFrame = 1000/25;
+    private long msPerFrame = 1000 / 25;
     private boolean running;
     private int fpsSamples[] = new int[50];
     private int samplePos = 0;
@@ -40,6 +43,8 @@ public class RunTimeManager extends Thread{
     private int renderedScore;
     private Paint paint;
     public boolean newGameCreated;
+
+    private boolean collision = false;
 
     public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager) {
         this.surfaceHolder = surfaceHolder;
@@ -60,35 +65,42 @@ public class RunTimeManager extends Thread{
         while (running) {
             try {
                 canvas = surfaceHolder.lockCanvas();
-                if(canvas == null) continue;
+                if (canvas == null) continue;
                 synchronized (surfaceHolder) {
                     draw(canvas);
                 }
-                thisFrameTime = System.currentTimeMillis();
-                framesSinceLastFrame = (float)(thisFrameTime - lastFrameTime)/msPerFrame;
 
-                float fps = 1000.0f / ((float)samplesSum / fpsSamples.length);
-                canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
+                if (player.isDied() && player.getAnimation().wasPlayedOnce()){
+                    monsterManager.removeAllMonster();
+                    player.revive();
+                    player.setPlaying(false);
+                } else {
 
+                    thisFrameTime = System.currentTimeMillis();
+                    framesSinceLastFrame = (float) (thisFrameTime - lastFrameTime) / msPerFrame;
 
-                update(framesSinceLastFrame);
+                    float fps = 1000.0f / ((float) samplesSum / fpsSamples.length);
+                    canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
 
-                thisFrameTime = System.currentTimeMillis();
-                int timeDelta = (int) (thisFrameTime - lastFrameTime);
+                    update(framesSinceLastFrame);
 
-                samplesSum -= fpsSamples[samplePos];
-                fpsSamples[samplePos++] = timeDelta;
-                samplesSum += timeDelta;
-                samplePos %= fpsSamples.length;
+                    thisFrameTime = System.currentTimeMillis();
+                    int timeDelta = (int) (thisFrameTime - lastFrameTime);
 
-                lastFrameTime = thisFrameTime;
+                    samplesSum -= fpsSamples[samplePos];
+                    fpsSamples[samplePos++] = timeDelta;
+                    samplesSum += timeDelta;
+                    samplePos %= fpsSamples.length;
 
-                if(timeDelta<msPerFrame)
-                    sleep(msPerFrame - timeDelta);
+                    lastFrameTime = thisFrameTime;
 
-            }catch(InterruptedException e){
+                    if (timeDelta < msPerFrame)
+                        sleep(msPerFrame - timeDelta);
 
-            }finally {
+                }
+            } catch (InterruptedException e) {
+
+            } finally {
                 if (canvas != null)
                     surfaceHolder.unlockCanvasAndPost(canvas);
             }
@@ -105,7 +117,7 @@ public class RunTimeManager extends Thread{
         monsterManager.draw(canvas);
         player.draw(canvas);
 
-        checkForCollision(monsterManager.getOnScreenMonster());
+        checkForCollision(monsterManager.getOnScreenMonster(), canvas);
 
         int score = player.getScore();
         if (score % 20 == 0) {
@@ -115,8 +127,6 @@ public class RunTimeManager extends Thread{
             }
         }
         canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
-
-
     }
 
     private Paint getPaint(BouncingBennoView view) {
@@ -170,22 +180,20 @@ public class RunTimeManager extends Thread{
         return true;
     }
 
-    private boolean collision(AbstractObject a, AbstractObject b)
-    {
+    private boolean collision(AbstractObject a, AbstractObject b) {
         Rect collisionBoxA = a.getHitbox();
         Rect collisionBoxB = b.getHitbox();
 
-        if (Rect.intersects(collisionBoxA, collisionBoxB)){
+        if (Rect.intersects(collisionBoxA, collisionBoxB)) {
             return true;
         }
         return false;
     }
 
-    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects) {
+    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects, Canvas canvas)  {
         for (int i = 0; i < objects.size(); i++) {
             if (collision(objects.get(i), player)) {
-                monsterManager.removeAllMonster();
-                player.setPlaying(false);
+                player.deathAnimation();
                 break;
             }
         }

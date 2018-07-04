@@ -34,4 +34,12 @@ public class ImageJumpBox extends HiddenJumpBox implements Drawable {
     public ImageJumpBox copy() {
         return new ImageJumpBox(getX(), getY(), getDirectionX(), getDirectionY(), getWidth(), getHeight(), animation.copy());
     }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
+    public Animation getAnimation() {
+        return animation;
+    }
 }

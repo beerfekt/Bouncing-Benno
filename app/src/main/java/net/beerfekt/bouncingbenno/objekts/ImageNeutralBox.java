@@ -34,4 +34,12 @@ public class ImageNeutralBox extends HiddenNeutralBox implements Drawable {
     public ImageNeutralBox copy() {
         return new ImageNeutralBox(getX(), getY(), getDirectionX(), getDirectionY(), getWidth(), getHeight(), animation.copy());
     }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
+    public Animation getAnimation() {
+        return animation;
+    }
 }

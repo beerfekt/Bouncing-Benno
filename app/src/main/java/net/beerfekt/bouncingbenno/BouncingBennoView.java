@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -16,6 +17,7 @@ import net.beerfekt.bouncingbenno.manager.BackgroundManager;
 import net.beerfekt.bouncingbenno.manager.MonsterManager;
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
+import net.beerfekt.bouncingbenno.objekts.properties.Animation;
 
 import java.util.ArrayList;
 
@@ -37,31 +39,14 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     private Bitmap benno;
 
     //MonsterManager
-    private Bitmap emy1;
-    private Bitmap emy2;
-    private Bitmap emy3;
-    private Bitmap emy4;
-    private Bitmap emy5;
-    private Bitmap emy6;
     private Bitmap[] emy = new Bitmap[6];
-    private Bitmap flo1;
-    private Bitmap flo2;
-    private Bitmap flo3;
-    private Bitmap flo4;
     private Bitmap[] flo = new Bitmap[4];
-    private Bitmap hans1;
-    private Bitmap hans2;
-    private Bitmap hans3;
-    private Bitmap hans4;
     private Bitmap[] hans = new Bitmap[4];
     private Bitmap rio;
-    private Bitmap rolph1;
-    private Bitmap rolph2;
-    private Bitmap rolph3;
-    private Bitmap rolph4;
-    private Bitmap rolph5;
-    private Bitmap rolph6;
-    private Bitmap[] rolph = new Bitmap[6];
+    private Bitmap[] rolph = new Bitmap[5];
+
+    //Death Explosion
+    private Bitmap[] explosion = new Bitmap[5];
 
     public BouncingBennoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -82,35 +67,36 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         benno = getBitmap(R.drawable.ic_benno);
 
         //MonsterManager
-        emy1 = getBitmap(R.drawable.ic_emy_einhorn);
-        emy2 = getBitmap(R.drawable.ic_emy_einhorn_2);
-        emy3 = getBitmap(R.drawable.ic_emy_einhorn_3);
-        emy4 = getBitmap(R.drawable.ic_emy_einhorn_4);
-        emy5 = getBitmap(R.drawable.ic_emy_einhorn_5);
-        emy6 = getBitmap(R.drawable.ic_emy_einhorn_6);
-        emy[0] = emy1; emy[1] = emy2; emy[2] = emy3; emy[3] = emy4; emy[4] = emy5; emy[5] = emy6;
+        emy[0] = getBitmap(R.drawable.ic_emy_einhorn);
+        emy[1] = getBitmap(R.drawable.ic_emy_einhorn_2);
+        emy[2] = getBitmap(R.drawable.ic_emy_einhorn_3);
+        emy[3] = getBitmap(R.drawable.ic_emy_einhorn_4);
+        emy[4] = getBitmap(R.drawable.ic_emy_einhorn_5);
+        emy[5] = getBitmap(R.drawable.ic_emy_einhorn_6);
 
-        flo1 = getBitmap(R.drawable.ic_flying_flo2);
-        flo2 = getBitmap(R.drawable.ic_flying_flo3);
-        flo3 = getBitmap(R.drawable.ic_flying_flo4);
-        flo4 = getBitmap(R.drawable.ic_flying_flo5);
-        flo[0] = flo1; flo[1] = flo2; flo[2] = flo3; flo[3] = flo4;
+        flo[0] = getBitmap(R.drawable.ic_flying_flo2);
+        flo[1] = getBitmap(R.drawable.ic_flying_flo3);
+        flo[2] = getBitmap(R.drawable.ic_flying_flo4);
+        flo[3] = getBitmap(R.drawable.ic_flying_flo5);
 
-        hans1 = getBitmap(R.drawable.ic_hans_horny);
-        hans2 = getBitmap(R.drawable.ic_hans_horny_1);
-        hans3 = getBitmap(R.drawable.ic_hans_horny_3);
-        hans4 = getBitmap(R.drawable.ic_hans_horny_4);
-        hans[0] = hans1; hans[1] = hans2; hans[2] = hans3; hans[3] = hans4;
+        hans[0] = getBitmap(R.drawable.ic_hans_horny);
+        hans[1] = getBitmap(R.drawable.ic_hans_horny_1);
+        hans[2] = getBitmap(R.drawable.ic_hans_horny_3);
+        hans[3] = getBitmap(R.drawable.ic_hans_horny_4);
 
         rio = getBitmap(R.drawable.ic_rio_reisnagel);
 
-        rolph1 = getBitmap(R.drawable.ic_rolph_ruessel);
-        rolph2 = getBitmap(R.drawable.ic_rolph_ruessel_2);
-        rolph3 = getBitmap(R.drawable.ic_rolph_ruessel_3);
-        rolph4 = getBitmap(R.drawable.ic_rolph_ruessel_4);
-        rolph5 = getBitmap(R.drawable.ic_rolph_ruessel_5);
-        rolph6 = getBitmap(R.drawable.ic_rolph_ruessel_6);
-        rolph[0] = rolph1; rolph[1] = rolph2; rolph[2] = rolph3; rolph[3] = rolph4; rolph[4] = rolph5; rolph[5] = rolph6;
+        rolph[0] = getBitmap(R.drawable.ic_rolph_ruessel);
+        rolph[1] = getBitmap(R.drawable.ic_rolph_ruessel_2);
+        rolph[2] = getBitmap(R.drawable.ic_rolph_ruessel_3);
+        rolph[3] = getBitmap(R.drawable.ic_rolph_ruessel_4);
+        rolph[4] = getBitmap(R.drawable.ic_rolph_ruessel_5);
+
+        explosion[0] = getBitmap(R.drawable.ic_benno_platzt1);
+        explosion[1] = getBitmap(R.drawable.ic_benno_platzt2);
+        explosion[2] = getBitmap(R.drawable.ic_benno_platzt3);
+        explosion[3] = getBitmap(R.drawable.ic_benno_platzt4);
+        explosion[4] = getBitmap(R.drawable.ic_benno_platzt5);
     }
 
     private Bitmap getBitmap(int drawableRes) {
@@ -143,7 +129,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             MonsterManager monsterManager = new MonsterManager(monster, emy, flo, hans, rolph);
 
             //Player
-            Player player = new Player(benno, 141.25f,127.5f, benno);
+            Player player = new Player(141.25f,127.5f, rollAnimation(benno), explosion);
 
             runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager);
             runTimeManager.startGame();
@@ -170,6 +156,18 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             return runTimeManager.onTouchEvent();
         }
         return false;
+    }
+
+    public Animation rollAnimation(Bitmap bitmap){
+        Matrix matrix = new Matrix();
+        Bitmap[] roller = new Bitmap[5];
+
+        for (int i=0; i<5; i++) {
+            matrix.postRotate(i*20);
+
+            roller[i] = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        }
+        return new Animation(roller,50);
     }
 }
 
