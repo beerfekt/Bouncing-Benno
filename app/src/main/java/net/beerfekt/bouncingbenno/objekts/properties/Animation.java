@@ -58,4 +58,8 @@ public class Animation {
     public void setPlayedOnce(boolean playedOnce) {
         this.playedOnce = playedOnce;
     }
+
+    public Bitmap[] getImages() {
+        return images;
+    }
 }

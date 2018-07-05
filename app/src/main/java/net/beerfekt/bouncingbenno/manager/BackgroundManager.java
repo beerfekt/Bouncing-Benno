@@ -87,7 +87,7 @@ public class BackgroundManager {
             lastFrameTime += objectsWaitTime;
             objectsWaitTime = rand.nextInt(3001) + 2000;
             Bitmap randObject = objects.get(rand.nextInt(3));
-            onScreenObjects.add(new ImageNeutralBox(RunTimeManager.SCREEN_WIDTH - 1, (float) rand.nextInt(144) + 350, -6f, 0f, 200, 300, randObject));
+            onScreenObjects.add(new ImageNeutralBox(RunTimeManager.SCREEN_WIDTH - 1, (float) rand.nextInt(144) + 350, -10f, 0f, 200, 300, randObject));
         }
 
         for (ImageNeutralBox box : onScreenObjects) {

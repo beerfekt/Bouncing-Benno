@@ -2,8 +2,6 @@ package net.beerfekt.bouncingbenno.manager;
 
 
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,8 +10,8 @@ import android.graphics.Typeface;
 import android.view.SurfaceHolder;
 
 import net.beerfekt.bouncingbenno.BouncingBennoView;
-import net.beerfekt.bouncingbenno.R;
 import net.beerfekt.bouncingbenno.objekts.AbstractObject;
+import net.beerfekt.bouncingbenno.objekts.game.Death;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 
 import java.util.ArrayList;
@@ -28,7 +26,7 @@ public class RunTimeManager extends Thread {
     private BouncingBennoView bouncingBennoView;
 
     //Attributes for method run
-    private long msPerFrame = 1000 / 25;
+    private long msPerFrame = 40;
     private boolean running;
     private int fpsSamples[] = new int[50];
     private int samplePos = 0;
@@ -38,20 +36,22 @@ public class RunTimeManager extends Thread {
     public BackgroundManager backgroundManager;
     public Player player;
     public MonsterManager monsterManager;
+    public Death death;
 
     private String renderedScoreString;
     private int renderedScore;
     private Paint paint;
     public boolean newGameCreated;
 
-    private boolean collision = false;
+    private boolean dead;
 
-    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager) {
+    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager, Death death) {
         this.surfaceHolder = surfaceHolder;
         this.bouncingBennoView = gamePanel;
         this.backgroundManager = backgroundManager;
         this.player = player;
         this.monsterManager = monsterManager;
+        this.death = death;
         paint = getPaint(gamePanel);
     }
 
@@ -70,12 +70,12 @@ public class RunTimeManager extends Thread {
                     draw(canvas);
                 }
 
-                if (player.isDied() && player.getAnimation().wasPlayedOnce()){
+                if (dead && death.getAnimation().wasPlayedOnce()) {
                     monsterManager.removeAllMonster();
-                    player.revive();
+                    death.getAnimation().setPlayedOnce(false);
+                    dead = false;
                     player.setPlaying(false);
                 } else {
-
                     thisFrameTime = System.currentTimeMillis();
                     framesSinceLastFrame = (float) (thisFrameTime - lastFrameTime) / msPerFrame;
 
@@ -115,7 +115,10 @@ public class RunTimeManager extends Thread {
         canvas.drawColor(Color.WHITE);
         backgroundManager.draw(canvas);
         monsterManager.draw(canvas);
-        player.draw(canvas);
+        if (!dead)
+            player.draw(canvas);
+        else
+            death.draw(canvas);
 
         checkForCollision(monsterManager.getOnScreenMonster(), canvas);
 
@@ -143,7 +146,10 @@ public class RunTimeManager extends Thread {
         if (player.getPlaying()) {
             backgroundManager.update(numberOfFrames);
             monsterManager.update(numberOfFrames);
-            player.update(numberOfFrames);
+            if (!dead)
+                player.update(numberOfFrames);
+            else
+                death.update(numberOfFrames);
         } else {
             newGameCreated = false;
         }
@@ -190,10 +196,10 @@ public class RunTimeManager extends Thread {
         return false;
     }
 
-    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects, Canvas canvas)  {
+    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects, Canvas canvas) {
         for (int i = 0; i < objects.size(); i++) {
             if (collision(objects.get(i), player)) {
-                player.deathAnimation();
+                dead = true;
                 break;
             }
         }

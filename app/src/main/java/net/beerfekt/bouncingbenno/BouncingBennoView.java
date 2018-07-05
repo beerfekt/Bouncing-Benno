@@ -16,6 +16,7 @@ import android.view.SurfaceView;
 import net.beerfekt.bouncingbenno.manager.BackgroundManager;
 import net.beerfekt.bouncingbenno.manager.MonsterManager;
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
+import net.beerfekt.bouncingbenno.objekts.game.Death;
 import net.beerfekt.bouncingbenno.objekts.game.Player;
 import net.beerfekt.bouncingbenno.objekts.properties.Animation;
 
@@ -133,10 +134,14 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             MonsterManager monsterManager = new MonsterManager(monster, emy, flo, hans, rolph);
 
             //Player
+            //Animation roll = new Animation(benno, 100);
             Animation roll = new Animation(benno, 100);
-            Player player = new Player(141.25f,127.5f, roll , explosion);
+            Player player = new Player(141.25f,127.5f, roll);
+            Animation dead = new Animation(explosion, 10);
+            Death death = new Death(141.25f,127.5f,dead);
 
-            runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager);
+
+            runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager, death);
             runTimeManager.startGame();
         }
     }

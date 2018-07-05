@@ -1,7 +1,6 @@
 package net.beerfekt.bouncingbenno.objekts.game;
 
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 
 import net.beerfekt.bouncingbenno.manager.RunTimeManager;
 import net.beerfekt.bouncingbenno.objekts.ImageNeutralBox;
@@ -14,8 +13,6 @@ public class Player extends ImageNeutralBox {
     private boolean up, playing;
     private long startTime;
 
-    private Animation normalAnimation;
-
     private float jumpStrength = 45f;
     private float weight = 3.5f;
     private boolean jumping = false;
@@ -23,14 +20,12 @@ public class Player extends ImageNeutralBox {
     private static final int LIMIT_AREA_BOTTOM = (int) (RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4));
     private static float START_POSITION = LIMIT_AREA_BOTTOM;
 
-    private Bitmap[] death;
-    private boolean died;
+    private boolean dead;
 
-    public Player(float w, float h, Animation benno, Bitmap[] explosion) {
+
+    public Player(float w, float h, Animation benno) {
         super(200f, START_POSITION, 0f, 0f, w, h, benno);
         startTime = System.nanoTime();
-        death = explosion;
-        normalAnimation = benno;
     }
 
     public void setUpTrue() {
@@ -77,19 +72,15 @@ public class Player extends ImageNeutralBox {
     }
 
     public void deathAnimation() {
-        Animation d = new Animation(death, 10);
-        setAnimation(d);
-        died = true;
+        dead = true;
     }
 
     public void revive(){
-        setAnimation(normalAnimation);
-        died = false;
-        getAnimation().setPlayedOnce(false);
+        dead = false;
     }
 
-    public boolean isDied() {
-        return died;
+    public boolean isDead() {
+        return dead;
     }
 
     public int getScore() {
