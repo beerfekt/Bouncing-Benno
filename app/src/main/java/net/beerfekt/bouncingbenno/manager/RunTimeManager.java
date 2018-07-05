@@ -197,8 +197,8 @@ public class RunTimeManager extends Thread {
     }
 
     private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects, Canvas canvas) {
-        for (int i = 0; i < objects.size(); i++) {
-            if (collision(objects.get(i), player)) {
+        for (AbstractObject o : objects) {
+            if (o.intersect(player)) {
                 dead = true;
                 break;
             }
