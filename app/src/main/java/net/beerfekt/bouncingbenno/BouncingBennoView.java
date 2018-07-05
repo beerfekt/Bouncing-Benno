@@ -101,12 +101,12 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         rolph[3] = getBitmap(R.drawable.ic_rolph_ruessel_4);
         rolph[4] = getBitmap(R.drawable.ic_rolph_ruessel_5);
 
-        explosion[0] = getBitmap(R.drawable.ic_benno_platzt1);
-        explosion[1] = getBitmap(R.drawable.ic_benno_platzt2);
-        explosion[2] = getBitmap(R.drawable.ic_benno_platzt3);
-        explosion[3] = getBitmap(R.drawable.ic_benno_platzt4);
-        explosion[4] = getBitmap(R.drawable.ic_benno_platzt5);
-        explosion[5] = getBitmap(R.drawable.ic_benno_platzt5);
+        explosion[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt1);
+        explosion[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt2);
+        explosion[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt3);
+        explosion[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt4);
+        explosion[4] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt5);
+        explosion[5] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt5);
     }
 
     private Bitmap getBitmap(int drawableRes) {
@@ -137,9 +137,9 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             //Player
             //Animation roll = new Animation(benno, 100);
             Animation roll = new Animation(benno, 100);
-            Player player = new Player(141.25f,127.5f, roll);
+            Player player = new Player(145.6f,132.6f, roll);
             Animation dead = new Animation(explosion, 20);
-            Death death = new Death(141.25f,127.5f,dead);
+            Death death = new Death(234f,132.6f, dead);
 
 
             runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager, death);
