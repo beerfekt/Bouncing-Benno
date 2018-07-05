@@ -16,7 +16,7 @@ public class Player extends ImageNeutralBox {
 
     private Animation normalAnimation;
 
-    private float jumpStrength = 46f;
+    private float jumpStrength = 45f;
     private float weight = 3.5f;
     private boolean jumping = false;
 
@@ -67,7 +67,7 @@ public class Player extends ImageNeutralBox {
         } else {
             setY(LIMIT_AREA_BOTTOM);
             resetDY();
-            jumpStrength = 50f;
+            jumpStrength = 47f;
         }
     }
 

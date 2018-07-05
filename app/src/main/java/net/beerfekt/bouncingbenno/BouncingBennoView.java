@@ -36,7 +36,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     private Bitmap overlay;
 
     //Player
-    private Bitmap benno;
+    private Bitmap[] benno = new Bitmap[8];
 
     //MonsterManager
     private Bitmap[] emy = new Bitmap[6];
@@ -64,7 +64,15 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         overlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.texture_paper_opacity_50);
 
         //Player
-        benno = getBitmap(R.drawable.ic_benno);
+        benno[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_0);
+        benno[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_40);
+        benno[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_80);
+        benno[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_120);
+        benno[4] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_160);
+        benno[5] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_200);
+        benno[6] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_240);
+        benno[7] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_320);
+
 
         //MonsterManager
         emy[0] = getBitmap(R.drawable.ic_emy_einhorn);
@@ -125,7 +133,8 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             MonsterManager monsterManager = new MonsterManager(monster, emy, flo, hans, rolph);
 
             //Player
-            Player player = new Player(141.25f,127.5f, rollAnimation(benno), explosion);
+            Animation roll = new Animation(benno, 100);
+            Player player = new Player(141.25f,127.5f, roll , explosion);
 
             runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager);
             runTimeManager.startGame();
@@ -152,18 +161,6 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             return runTimeManager.onTouchEvent();
         }
         return false;
-    }
-
-    public Animation rollAnimation(Bitmap bitmap){
-        Matrix matrix = new Matrix();
-        Bitmap[] roller = new Bitmap[5];
-
-        for (int i=0; i<5; i++) {
-            matrix.postRotate(i*20);
-
-            roller[i] = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        }
-        return new Animation(roller,50);
     }
 }
 
