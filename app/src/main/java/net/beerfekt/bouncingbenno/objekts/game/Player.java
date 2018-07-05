@@ -9,9 +9,7 @@ import net.beerfekt.bouncingbenno.objekts.properties.Animation;
 
 
 public class Player extends ImageNeutralBox {
-    private int score;
     private boolean up, playing;
-    private long startTime;
 
     private float jumpStrength = 45f;
     private float weight = 3.5f;
@@ -25,7 +23,6 @@ public class Player extends ImageNeutralBox {
 
     public Player(float w, float h, Animation benno) {
         super(200f, START_POSITION, 0f, 0f, w, h, benno);
-        startTime = System.nanoTime();
     }
 
     public void setUpTrue() {
@@ -34,14 +31,6 @@ public class Player extends ImageNeutralBox {
 
     public void update(float numberOfFrames) {
         super.update(numberOfFrames);
-
-        //Score
-        long elapsed = (System.nanoTime() - startTime) / 1000000;
-        if (elapsed > 100) {
-            score++;
-            startTime = System.nanoTime();
-        }
-
         //Jump
         if (jumping) {
             if (getY() > LIMIT_AREA_BOTTOM) {
@@ -83,20 +72,12 @@ public class Player extends ImageNeutralBox {
         return dead;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public boolean getPlaying() {
         return playing;
     }
 
     public void setPlaying(boolean b) {
         playing = b;
-    }
-
-    public void resetScore() {
-        score = 0;
     }
 
     public void resetDY() {

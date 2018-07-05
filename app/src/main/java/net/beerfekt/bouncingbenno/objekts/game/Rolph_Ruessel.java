@@ -10,8 +10,4 @@ public class Rolph_Ruessel extends ImageKillBox {
     public Rolph_Ruessel(float w, float h, Animation rolph){
         super(RunTimeManager.SCREEN_WIDTH-1, 720, -35f, 0f , w, h, rolph);
     }
-
-    public void update(float numberOfFrames) {
-        super.update(numberOfFrames);
-    }
 }

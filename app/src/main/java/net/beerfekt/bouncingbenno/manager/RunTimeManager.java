@@ -45,6 +45,9 @@ public class RunTimeManager extends Thread {
 
     private boolean dead;
 
+    private int score;
+    private  long scoreTime = System.currentTimeMillis();
+
     public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager, Death death) {
         this.surfaceHolder = surfaceHolder;
         this.bouncingBennoView = gamePanel;
@@ -73,7 +76,6 @@ public class RunTimeManager extends Thread {
                 if (dead && death.getAnimation().getCurrentImage()==5) {
                     death.getAnimation().setCurrentImage(0);
                     monsterManager.removeAllMonster();
-                    death.getAnimation().setPlayedOnce(false);
                     dead = false;
                     player.setPlaying(false);
                 } else {
@@ -84,6 +86,13 @@ public class RunTimeManager extends Thread {
                     canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
 
                     update(framesSinceLastFrame);
+
+                    if(player.getPlaying() && running && !dead) {
+                        if (scoreTime + 100 * 1000 > System.currentTimeMillis()) {
+                            score++;
+                            scoreTime = System.currentTimeMillis();
+                        }
+                    }
 
                     thisFrameTime = System.currentTimeMillis();
                     int timeDelta = (int) (thisFrameTime - lastFrameTime);
@@ -121,15 +130,13 @@ public class RunTimeManager extends Thread {
         else
             death.draw(canvas);
 
-        checkForCollision(monsterManager.getOnScreenMonster(), canvas);
+        checkPlayerCollision(monsterManager.getOnScreenMonster(), canvas);
 
-        int score = player.getScore();
-        if (score % 20 == 0) {
-            if (score != this.renderedScore || this.renderedScoreString == null) {
-                this.renderedScore = score;
-                this.renderedScoreString = Integer.toString(this.renderedScore);
-            }
+        if (score != this.renderedScore || this.renderedScoreString == null) {
+            this.renderedScore = score;
+            this.renderedScoreString = Integer.toString(this.renderedScore);
         }
+
         canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
     }
 
@@ -158,11 +165,13 @@ public class RunTimeManager extends Thread {
 
     public void newGame() {
         player.resetDY();
-        player.resetScore();
-        renderedScoreString = Integer.toString(player.getScore());
+        score = 0;
+        renderedScoreString = "0";
         player.resetStartPosition();
-        newGameCreated = true;
         player.setPlaying(true);
+
+        running = true;
+        start();
     }
 
     public void stopGame() {
@@ -174,25 +183,19 @@ public class RunTimeManager extends Thread {
         }
     }
 
-    public void startGame() {
-        running = true;
-        start();
-    }
-
     public boolean onTouchEvent() {
-        if (!player.getPlaying() && !newGameCreated) {
-            newGame();
+        if (player.getPlaying()) {
+            player.setUpTrue();
         }
         else {
-            player.setUpTrue();
+            newGame();
         }
         return true;
     }
 
-    private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects, Canvas canvas) {
+    private <T extends AbstractObject> void checkPlayerCollision(ArrayList<T> objects, Canvas canvas) {
         for (AbstractObject o : objects) {
             if (o.intersect(player)) {
-                death.setX(player.getX());
                 dead = true;
                 break;
             }

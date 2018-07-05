@@ -55,10 +55,6 @@ public class Animation {
         return new Animation(images,animationSpeed);
     }
 
-    public void setPlayedOnce(boolean playedOnce) {
-        this.playedOnce = playedOnce;
-    }
-
     public int getCurrentImage() {
         return currentImage;
     }

@@ -143,7 +143,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
 
             runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager, death);
-            runTimeManager.startGame();
+            runTimeManager.newGame();
         }
     }
 
