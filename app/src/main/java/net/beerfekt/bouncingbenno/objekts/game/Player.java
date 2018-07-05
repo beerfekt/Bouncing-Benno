@@ -45,7 +45,7 @@ public class Player extends ImageNeutralBox {
             }
         } else {
             setY(LIMIT_AREA_BOTTOM);
-            resetDY();
+            setDirectionY(0);
             jumpStrengthProgress = jumpStrength;
         }
     }
@@ -55,11 +55,8 @@ public class Player extends ImageNeutralBox {
         jumpStrengthProgress -= jumpWeight;
     }
 
-    public void resetDY() {
-        setDirectionY(0);
-    }
-
-    public void resetStartPosition() {
+    public void resetPosition() {
         setY(LIMIT_AREA_BOTTOM);
+        setDirectionY(0);
     }
 }

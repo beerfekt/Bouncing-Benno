@@ -17,13 +17,12 @@ import net.beerfekt.bouncingbenno.objekts.game.Player;
 import java.util.ArrayList;
 
 public class RunTimeManager extends Thread {
-
-
     public final static float SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080;
     public final static Rect SCREEN_RECT = new Rect(0, 0, (int) SCREEN_WIDTH, (int) SCREEN_HEIGHT);
 
     private SurfaceHolder surfaceHolder;
     private BouncingBennoView bouncingBennoView;
+    private Paint paint;
 
     //Attributes for method run
     private long msPerFrame = 38;
@@ -38,17 +37,15 @@ public class RunTimeManager extends Thread {
     public MonsterManager monsterManager;
     public Death death;
 
-    private String renderedScoreString;
-    private int renderedScore;
-    private Paint paint;
-    public boolean newGameCreated;
+    //Score
+    private int score;
+    private long scoreTime = System.currentTimeMillis();
 
-
+    //Misc
+    public boolean newGame;
     private boolean playing;
     private boolean dead;
 
-    private int score;
-    private  long scoreTime = System.currentTimeMillis();
 
     public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager, Death death) {
         this.surfaceHolder = surfaceHolder;
@@ -87,7 +84,13 @@ public class RunTimeManager extends Thread {
                     float fps = 1000.0f / ((float) samplesSum / fpsSamples.length);
                     canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
 
-                    update(framesSinceLastFrame);
+                    if (playing && running) {
+                        update(framesSinceLastFrame);
+                    } else {
+                        newGame = false;
+                    }
+
+                    checkPlayerCollision(monsterManager.getOnScreenMonster());
 
                     if(playing && running && !dead) {
                         if (scoreTime + 100 * 1000 > System.currentTimeMillis()) {
@@ -127,19 +130,14 @@ public class RunTimeManager extends Thread {
         canvas.drawColor(Color.WHITE);
         backgroundManager.draw(canvas);
         monsterManager.draw(canvas);
-        if (!dead)
-            player.draw(canvas);
-        else
+        if(dead) {
             death.draw(canvas);
-
-        checkPlayerCollision(monsterManager.getOnScreenMonster());
-
-        if (score != this.renderedScore || this.renderedScoreString == null) {
-            this.renderedScore = score;
-            this.renderedScoreString = Integer.toString(this.renderedScore);
+        }
+        else {
+            player.draw(canvas);
         }
 
-        canvas.drawText("Score: " + this.renderedScoreString, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
+        canvas.drawText("Score: " + score, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8, paint);
     }
 
     private Paint getPaint(BouncingBennoView view) {
@@ -153,26 +151,23 @@ public class RunTimeManager extends Thread {
     }
 
     public void update(float numberOfFrames) {
-        if (playing && running) {
-            backgroundManager.update(numberOfFrames);
-            monsterManager.update(numberOfFrames);
-            if (!dead)
-                player.update(numberOfFrames);
-            else
-                death.update(numberOfFrames);
-        } else {
-            newGameCreated = false;
+        backgroundManager.update(numberOfFrames);
+        monsterManager.update(numberOfFrames);
+        if (!dead) {
+            player.update(numberOfFrames);
+        }
+        else {
+            death.update(numberOfFrames);
         }
     }
 
     public void newGame() {
-        player.resetDY();
         score = 0;
-        renderedScoreString = "0";
-        player.resetStartPosition();
-        playing = true;
+        player.resetPosition();
 
+        playing = true;
         running = true;
+
         start();
     }
 
