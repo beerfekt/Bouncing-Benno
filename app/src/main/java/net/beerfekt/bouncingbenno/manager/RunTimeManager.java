@@ -42,8 +42,7 @@ public class RunTimeManager extends Thread {
     private long scoreTime = System.currentTimeMillis();
 
     //Misc
-    public boolean newGame;
-    private boolean playing;
+    private boolean gameRunning;
     private boolean dead;
 
 
@@ -70,49 +69,43 @@ public class RunTimeManager extends Thread {
                 if (canvas == null) continue;
                 synchronized (surfaceHolder) {
                     draw(canvas);
-                }
-
-                if (dead && death.getAnimation().getCurrentImage()==5) {
-                    death.getAnimation().setCurrentImage(0);
-                    monsterManager.removeAllMonster();
-                    dead = false;
-                    playing = false;
-                } else {
-                    thisFrameTime = System.currentTimeMillis();
-                    framesSinceLastFrame = (float) (thisFrameTime - lastFrameTime) / msPerFrame;
-
                     float fps = 1000.0f / ((float) samplesSum / fpsSamples.length);
                     canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
+                }
 
-                    if (playing && running) {
-                        update(framesSinceLastFrame);
+                if (gameRunning) {
+                    if (dead && death.getAnimation().getCurrentImage() == 5) { //TODO WasPlayedOnce
+                        death.setAnimation(death.getAnimation().copy());
+                        monsterManager.removeAllMonster();
+                        dead = false;
+                        gameRunning = false;
                     } else {
-                        newGame = false;
-                    }
-
-                    checkPlayerCollision(monsterManager.getOnScreenMonster());
-
-                    if(playing && running && !dead) {
-                        if (scoreTime + 100 * 1000 > System.currentTimeMillis()) {
-                            score++;
-                            scoreTime = System.currentTimeMillis();
+                        thisFrameTime = System.currentTimeMillis();
+                        framesSinceLastFrame = (float) (thisFrameTime - lastFrameTime) / msPerFrame;
+                        update(framesSinceLastFrame);
+                        checkPlayerCollision(monsterManager.getOnScreenMonster());
+                        if (!dead) {
+                            if (scoreTime + 100 * 1000 > System.currentTimeMillis()) {
+                                score++;
+                                scoreTime = System.currentTimeMillis();
+                            }
                         }
                     }
-
-                    thisFrameTime = System.currentTimeMillis();
-                    int timeDelta = (int) (thisFrameTime - lastFrameTime);
-
-                    samplesSum -= fpsSamples[samplePos];
-                    fpsSamples[samplePos++] = timeDelta;
-                    samplesSum += timeDelta;
-                    samplePos %= fpsSamples.length;
-
-                    lastFrameTime = thisFrameTime;
-
-                    if (timeDelta < msPerFrame)
-                        sleep(msPerFrame - timeDelta);
-
                 }
+
+                thisFrameTime = System.currentTimeMillis();
+                int timeDelta = (int) (thisFrameTime - lastFrameTime);
+
+                samplesSum -= fpsSamples[samplePos];
+                fpsSamples[samplePos++] = timeDelta;
+                samplesSum += timeDelta;
+                samplePos %= fpsSamples.length;
+
+                lastFrameTime = thisFrameTime;
+
+                if (timeDelta < msPerFrame)
+                    sleep(msPerFrame - timeDelta);
+
             } catch (InterruptedException e) {
 
             } finally {
@@ -130,10 +123,9 @@ public class RunTimeManager extends Thread {
         canvas.drawColor(Color.WHITE);
         backgroundManager.draw(canvas);
         monsterManager.draw(canvas);
-        if(dead) {
+        if (dead) {
             death.draw(canvas);
-        }
-        else {
+        } else {
             player.draw(canvas);
         }
 
@@ -155,8 +147,7 @@ public class RunTimeManager extends Thread {
         monsterManager.update(numberOfFrames);
         if (!dead) {
             player.update(numberOfFrames);
-        }
-        else {
+        } else {
             death.update(numberOfFrames);
         }
     }
@@ -165,7 +156,7 @@ public class RunTimeManager extends Thread {
         score = 0;
         player.resetPosition();
 
-        playing = true;
+        gameRunning = true;
         running = true;
 
         start();
@@ -181,10 +172,11 @@ public class RunTimeManager extends Thread {
     }
 
     public boolean onTouchEvent() {
-        if (playing) {
-            player.jump();
-        }
-        else {
+        if (gameRunning) {
+            if (!dead) {
+                player.jump();
+            }
+        } else {
             newGame();
         }
         return true;

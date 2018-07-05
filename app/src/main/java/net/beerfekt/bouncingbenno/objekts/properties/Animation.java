@@ -58,8 +58,4 @@ public class Animation {
     public int getCurrentImage() {
         return currentImage;
     }
-
-    public void setCurrentImage(int currentImage) {
-        this.currentImage = currentImage;
-    }
 }
