@@ -143,7 +143,7 @@ public class RunTimeManager extends Thread {
     }
 
     public void update(float numberOfFrames) {
-        if (player.getPlaying()) {
+        if (player.getPlaying() && running) {
             backgroundManager.update(numberOfFrames);
             monsterManager.update(numberOfFrames);
             if (!dead)
@@ -158,7 +158,7 @@ public class RunTimeManager extends Thread {
     public void newGame() {
         player.resetDY();
         player.resetScore();
-        this.renderedScoreString = Integer.toString(player.getScore());
+        renderedScoreString = Integer.toString(player.getScore());
         player.resetStartPosition();
         newGameCreated = true;
         player.setPlaying(true);
