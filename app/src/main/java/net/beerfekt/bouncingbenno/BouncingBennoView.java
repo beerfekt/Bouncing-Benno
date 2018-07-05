@@ -138,7 +138,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             //Animation roll = new Animation(benno, 100);
             Animation roll = new Animation(benno, 100);
             Player player = new Player(145.6f,132.6f, roll);
-            Animation dead = new Animation(explosion, 20);
+            Animation dead = new Animation(explosion, 20, true);
             Death death = new Death(234f,132.6f, dead);
 
 
