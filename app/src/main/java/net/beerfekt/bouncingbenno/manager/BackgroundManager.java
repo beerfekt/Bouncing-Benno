@@ -81,7 +81,15 @@ public class BackgroundManager {
         street1.update(numberOfFrames);
         street2.update(numberOfFrames);
 
+        addOnscreenObjects();
 
+        for (ImageNeutralBox box : onScreenObjects) {
+            box.update(numberOfFrames);
+        }
+        removeLand();
+    }
+
+    private void addOnscreenObjects() {
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
         if (elapsed > objectsWaitTime) {
             lastFrameTime += objectsWaitTime;
@@ -89,11 +97,6 @@ public class BackgroundManager {
             Bitmap randObject = objects.get(rand.nextInt(3));
             onScreenObjects.add(new ImageNeutralBox(RunTimeManager.SCREEN_WIDTH - 1, (float) rand.nextInt(144) + 350, -10f, 0f, 200, 300, randObject));
         }
-
-        for (ImageNeutralBox box : onScreenObjects) {
-            box.update(numberOfFrames);
-        }
-        removeLand();
     }
 
     private void removeLand() {

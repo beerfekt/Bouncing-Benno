@@ -47,6 +47,17 @@ public class MonsterManager {
     }
 
     public void update(float numberOfFrames) {
+        addOnscreenMonsters();
+
+        for (ImageKillBox box : onScreenMonster) {
+            if (box.intersect(RunTimeManager.SCREEN_RECT)) {
+                box.update(numberOfFrames);
+            }
+        }
+        removeMonster();
+    }
+
+    private void addOnscreenMonsters() {
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
         if (elapsed > objectsWaitTime) {
             lastFrameTime += objectsWaitTime;
@@ -65,13 +76,6 @@ public class MonsterManager {
             if (rand == 4)
                 onScreenMonster.add(new Rolph_Ruessel(rolph[0].getWidth()/3.5f, rolph[0].getHeight()/3.5f , new Animation(rolph, 30)));
         }
-
-        for (ImageKillBox box : onScreenMonster) {
-            if (box.intersect(RunTimeManager.SCREEN_RECT)) {
-                box.update(numberOfFrames);
-            }
-        }
-        removeMonster();
     }
 
     public ArrayList<ImageKillBox> getOnScreenMonster(){
