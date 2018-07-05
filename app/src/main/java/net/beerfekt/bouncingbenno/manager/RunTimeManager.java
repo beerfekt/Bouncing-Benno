@@ -75,7 +75,7 @@ public class RunTimeManager extends Thread {
                 }
 
                 if (gameRunning) {
-                    if (dead && death.getAnimation().wasPlayedOnce()) { //TODO WasPlayedOnce
+                    if (dead && death.getAnimation().wasPlayedOnce()) {
                         death.setAnimation(death.getAnimation().copy());
                         monsterManager.removeAllMonster();
                         dead = false;
