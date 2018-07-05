@@ -40,6 +40,9 @@ public class Player extends ImageNeutralBox {
                     jumpProgress();
                     if(i != numberOfFrames-1) {
                         setY(getY() + getDirectionY());
+                        if(getY() > LIMIT_AREA_BOTTOM) {
+                            setY(LIMIT_AREA_BOTTOM);
+                        }
                     }
                 }
             }
