@@ -63,18 +63,17 @@ public class MonsterManager {
             lastFrameTime = System.currentTimeMillis();
             objectsWaitTime = rand.nextInt(1501) + 1000;
             int rand = MonsterManager.rand.nextInt(5);
-            //Bitmap randMonster = monster.get(rand);
 
             if (rand == 0)
-                onScreenMonster.add(new Emy_Einhorn(emy[0].getWidth()/4f, emy[0].getHeight()/4f, new Animation(emy, 30)));
+                onScreenMonster.add(new Emy_Einhorn(emy[0].getWidth()/5f, emy[0].getHeight()/5f, new Animation(emy, 30)));
             if (rand == 1)
-                onScreenMonster.add(new Flying_Flo(flo[0].getWidth()/3f, flo[0].getHeight()/3f , new Animation(flo, 30)));
+                onScreenMonster.add(new Flying_Flo(flo[0].getWidth()/3.4f, flo[0].getHeight()/3.4f , new Animation(flo, 30)));
             if (rand == 2)
-                onScreenMonster.add(new Hans_Horny(hans[0].getWidth()/4f, hans[0].getHeight()/4f , new Animation(hans, 30)));
+                onScreenMonster.add(new Hans_Horny(hans[0].getWidth()/4.7f, hans[0].getHeight()/4.7f , new Animation(hans, 30)));
             if (rand == 3)
-                onScreenMonster.add(new Rio_Reisnagel(monster.get(0).getWidth()/3f, monster.get(0).getHeight()/3f , monster.get(0)));
+                onScreenMonster.add(new Rio_Reisnagel(monster.get(0).getWidth()/3.5f, monster.get(0).getHeight()/3.5f , monster.get(0)));
             if (rand == 4)
-                onScreenMonster.add(new Rolph_Ruessel(rolph[0].getWidth()/3.5f, rolph[0].getHeight()/3.5f , new Animation(rolph, 30)));
+                onScreenMonster.add(new Rolph_Ruessel(rolph[0].getWidth()/4.5f, rolph[0].getHeight()/4.5f , new Animation(rolph, 30)));
         }
     }
 

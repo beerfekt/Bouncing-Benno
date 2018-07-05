@@ -7,6 +7,6 @@ import net.beerfekt.bouncingbenno.objekts.ImageKillBox;
 
 public class Rio_Reisnagel extends ImageKillBox {
     public Rio_Reisnagel(float w, float h, Bitmap rio){
-        super(RunTimeManager.SCREEN_WIDTH-1, 835, -20f, 0f , w, h, rio);
+        super(RunTimeManager.SCREEN_WIDTH-1, 860, -20f, 0f , w, h, rio);
     }
 }

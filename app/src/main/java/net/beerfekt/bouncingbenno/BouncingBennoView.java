@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -48,6 +47,9 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
 
     //Death Explosion
     private Bitmap[] explosion = new Bitmap[6];
+
+    //start screen
+    private Bitmap start;
 
     public BouncingBennoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -107,6 +109,8 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         explosion[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt4);
         explosion[4] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt5);
         explosion[5] = BitmapFactory.decodeResource(context.getResources(), R.drawable.benno_platzt5);
+
+        start = BitmapFactory.decodeResource(context.getResources(), R.drawable.start);
     }
 
     private Bitmap getBitmap(int drawableRes) {
@@ -139,10 +143,10 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             Animation roll = new Animation(benno, 100);
             Player player = new Player(145.6f,132.6f, roll);
             Animation dead = new Animation(explosion, 20, true);
-            Death death = new Death(234f,132.6f, dead);
+            Death death = new Death(204f,102.6f, dead);
 
 
-            runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager, death);
+            runTimeManager = new RunTimeManager(holder, this, backgroundManager, player, monsterManager, death, start);
             runTimeManager.startGame();
             runTimeManager.start();
         }
@@ -170,4 +174,3 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         return false;
     }
 }
-

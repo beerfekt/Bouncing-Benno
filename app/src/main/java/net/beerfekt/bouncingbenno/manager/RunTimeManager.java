@@ -2,6 +2,7 @@ package net.beerfekt.bouncingbenno.manager;
 
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -45,9 +46,10 @@ public class RunTimeManager extends Thread {
     //Misc
     private boolean gameRunning;
     private boolean dead;
+    private Bitmap start;
 
 
-    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager, Death death) {
+    public RunTimeManager(SurfaceHolder surfaceHolder, BouncingBennoView gamePanel, BackgroundManager backgroundManager, Player player, MonsterManager monsterManager, Death death, Bitmap start) {
         this.surfaceHolder = surfaceHolder;
         this.bouncingBennoView = gamePanel;
         this.backgroundManager = backgroundManager;
@@ -55,6 +57,7 @@ public class RunTimeManager extends Thread {
         this.monsterManager = monsterManager;
         this.death = death;
         paint = getPaint(gamePanel);
+        this.start = start;
     }
 
     @Override
@@ -69,9 +72,13 @@ public class RunTimeManager extends Thread {
                 canvas = surfaceHolder.lockCanvas();
                 if (canvas == null) continue;
                 synchronized (surfaceHolder) {
-                    draw(canvas);
-                    float fps = 1000.0f / ((float) samplesSum / fpsSamples.length);
-                    canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
+                    if (gameRunning) {
+                        draw(canvas);
+                        float fps = 1000.0f / ((float) samplesSum / fpsSamples.length);
+                        canvas.drawText(String.format("FPS: %f", fps), 10, 10, new Paint());
+                    } else {
+                        canvas.drawBitmap(start, 0, 0, null);
+                    }
                 }
 
                 if (gameRunning) {

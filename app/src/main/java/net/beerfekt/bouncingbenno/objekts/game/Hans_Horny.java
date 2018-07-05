@@ -8,7 +8,7 @@ import net.beerfekt.bouncingbenno.objekts.properties.Animation;
 
 public class Hans_Horny extends ImageKillBox {
     public Hans_Horny(float w, float h, Animation hans){
-        super(RunTimeManager.SCREEN_WIDTH-1, 720, -45f, 0f , w, h, hans);
+        super(RunTimeManager.SCREEN_WIDTH-1, 750, -45f, 0f , w, h, hans);
     }
 
     public void update(float numberOfFrames) {
