@@ -161,6 +161,10 @@ public class RunTimeManager extends Thread {
         running = true;
     }
 
+    public void startGame() {
+        running = true;
+    }
+
     public void stopGame() {
         running = false;
         try {
