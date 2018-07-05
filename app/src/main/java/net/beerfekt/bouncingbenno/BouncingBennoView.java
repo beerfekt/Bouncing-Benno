@@ -47,7 +47,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
     private Bitmap[] rolph = new Bitmap[5];
 
     //Death Explosion
-    private Bitmap[] explosion = new Bitmap[5];
+    private Bitmap[] explosion = new Bitmap[6];
 
     public BouncingBennoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -106,6 +106,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
         explosion[2] = getBitmap(R.drawable.ic_benno_platzt3);
         explosion[3] = getBitmap(R.drawable.ic_benno_platzt4);
         explosion[4] = getBitmap(R.drawable.ic_benno_platzt5);
+        explosion[5] = getBitmap(R.drawable.ic_benno_platzt5);
     }
 
     private Bitmap getBitmap(int drawableRes) {
@@ -137,7 +138,7 @@ public class BouncingBennoView extends SurfaceView implements SurfaceHolder.Call
             //Animation roll = new Animation(benno, 100);
             Animation roll = new Animation(benno, 100);
             Player player = new Player(141.25f,127.5f, roll);
-            Animation dead = new Animation(explosion, 10);
+            Animation dead = new Animation(explosion, 20);
             Death death = new Death(141.25f,127.5f,dead);
 
 

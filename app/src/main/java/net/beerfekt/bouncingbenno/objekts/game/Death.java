@@ -12,5 +12,10 @@ public class Death extends ImageNeutralBox {
     public void update(float numberOfFrames) {
         super.update(numberOfFrames);
     }
+
+    @Override
+    public void setX(float x) {
+        super.setX(x);
+    }
 }
 

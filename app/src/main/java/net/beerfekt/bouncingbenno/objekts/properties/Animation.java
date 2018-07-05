@@ -59,7 +59,11 @@ public class Animation {
         this.playedOnce = playedOnce;
     }
 
-    public Bitmap[] getImages() {
-        return images;
+    public int getCurrentImage() {
+        return currentImage;
+    }
+
+    public void setCurrentImage(int currentImage) {
+        this.currentImage = currentImage;
     }
 }

@@ -26,7 +26,7 @@ public class RunTimeManager extends Thread {
     private BouncingBennoView bouncingBennoView;
 
     //Attributes for method run
-    private long msPerFrame = 40;
+    private long msPerFrame = 38;
     private boolean running;
     private int fpsSamples[] = new int[50];
     private int samplePos = 0;
@@ -70,7 +70,8 @@ public class RunTimeManager extends Thread {
                     draw(canvas);
                 }
 
-                if (dead && death.getAnimation().wasPlayedOnce()) {
+                if (dead && death.getAnimation().getCurrentImage()==5) {
+                    death.getAnimation().setCurrentImage(0);
                     monsterManager.removeAllMonster();
                     death.getAnimation().setPlayedOnce(false);
                     dead = false;
@@ -188,13 +189,10 @@ public class RunTimeManager extends Thread {
         return true;
     }
 
-    private boolean collision(AbstractObject a, AbstractObject b) {
-        return Rect.intersects(a.getHitbox(), b.getHitbox());
-    }
-
     private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects, Canvas canvas) {
         for (AbstractObject o : objects) {
             if (o.intersect(player)) {
+                death.setX(player.getX());
                 dead = true;
                 break;
             }
