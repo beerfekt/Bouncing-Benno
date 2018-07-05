@@ -60,7 +60,7 @@ public class MonsterManager {
     private void addOnscreenMonsters() {
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
         if (elapsed > objectsWaitTime) {
-            lastFrameTime += objectsWaitTime;
+            lastFrameTime = System.currentTimeMillis();
             objectsWaitTime = rand.nextInt(1501) + 1000;
             int rand = MonsterManager.rand.nextInt(5);
             //Bitmap randMonster = monster.get(rand);

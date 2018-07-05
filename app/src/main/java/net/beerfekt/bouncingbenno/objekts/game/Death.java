@@ -9,13 +9,18 @@ public class Death extends ImageNeutralBox {
         super(200f, RunTimeManager.SCREEN_HEIGHT - (RunTimeManager.SCREEN_HEIGHT / 4), 0, 0f, w, h, death);
     }
 
-    public void update(float numberOfFrames) {
-        super.update(numberOfFrames);
-    }
-
+    /*
     @Override
-    public void setX(float x) {
-        super.setX(x);
+    public void update(float numberOfFrames) {
+        time += animationSpeed * numberOfFrames;
+        if (time >= 100) {
+            time = 0;
+            currentImage++;
+            if (currentImage >= images.length)
+                currentImage = 0;
+            playedOnce = true;
+        }
     }
+    */
 }
 

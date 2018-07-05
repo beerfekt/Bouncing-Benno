@@ -92,7 +92,7 @@ public class BackgroundManager {
     private void addOnscreenObjects() {
         long elapsed = (System.currentTimeMillis() - lastFrameTime);
         if (elapsed > objectsWaitTime) {
-            lastFrameTime += objectsWaitTime;
+            lastFrameTime = System.currentTimeMillis();
             objectsWaitTime = rand.nextInt(3001) + 2000;
             Bitmap randObject = objects.get(rand.nextInt(3));
             onScreenObjects.add(new ImageNeutralBox(RunTimeManager.SCREEN_WIDTH - 1, (float) rand.nextInt(144) + 350, -10f, 0f, 200, 300, randObject));
