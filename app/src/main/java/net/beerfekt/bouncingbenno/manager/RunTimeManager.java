@@ -43,6 +43,8 @@ public class RunTimeManager extends Thread {
     private Paint paint;
     public boolean newGameCreated;
 
+
+    private boolean playing;
     private boolean dead;
 
     private int score;
@@ -77,7 +79,7 @@ public class RunTimeManager extends Thread {
                     death.getAnimation().setCurrentImage(0);
                     monsterManager.removeAllMonster();
                     dead = false;
-                    player.setPlaying(false);
+                    playing = false;
                 } else {
                     thisFrameTime = System.currentTimeMillis();
                     framesSinceLastFrame = (float) (thisFrameTime - lastFrameTime) / msPerFrame;
@@ -87,7 +89,7 @@ public class RunTimeManager extends Thread {
 
                     update(framesSinceLastFrame);
 
-                    if(player.getPlaying() && running && !dead) {
+                    if(playing && running && !dead) {
                         if (scoreTime + 100 * 1000 > System.currentTimeMillis()) {
                             score++;
                             scoreTime = System.currentTimeMillis();
@@ -130,7 +132,7 @@ public class RunTimeManager extends Thread {
         else
             death.draw(canvas);
 
-        checkPlayerCollision(monsterManager.getOnScreenMonster(), canvas);
+        checkPlayerCollision(monsterManager.getOnScreenMonster());
 
         if (score != this.renderedScore || this.renderedScoreString == null) {
             this.renderedScore = score;
@@ -151,7 +153,7 @@ public class RunTimeManager extends Thread {
     }
 
     public void update(float numberOfFrames) {
-        if (player.getPlaying() && running) {
+        if (playing && running) {
             backgroundManager.update(numberOfFrames);
             monsterManager.update(numberOfFrames);
             if (!dead)
@@ -168,7 +170,7 @@ public class RunTimeManager extends Thread {
         score = 0;
         renderedScoreString = "0";
         player.resetStartPosition();
-        player.setPlaying(true);
+        playing = true;
 
         running = true;
         start();
@@ -184,8 +186,8 @@ public class RunTimeManager extends Thread {
     }
 
     public boolean onTouchEvent() {
-        if (player.getPlaying()) {
-            player.setUpTrue();
+        if (playing) {
+            player.jump();
         }
         else {
             newGame();
@@ -193,7 +195,7 @@ public class RunTimeManager extends Thread {
         return true;
     }
 
-    private <T extends AbstractObject> void checkPlayerCollision(ArrayList<T> objects, Canvas canvas) {
+    private <T extends AbstractObject> void checkPlayerCollision(ArrayList<T> objects) {
         for (AbstractObject o : objects) {
             if (o.intersect(player)) {
                 dead = true;
