@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import net.beerfekt.bouncingbenno.BouncingBennoView;
@@ -158,8 +159,6 @@ public class RunTimeManager extends Thread {
 
         gameRunning = true;
         running = true;
-
-        start();
     }
 
     public void stopGame() {
