@@ -161,6 +161,7 @@ public class RunTimeManager extends Thread {
         this.renderedScoreString = Integer.toString(player.getScore());
         player.resetStartPosition();
         newGameCreated = true;
+        player.setPlaying(true);
     }
 
     public void stopGame() {
@@ -180,20 +181,15 @@ public class RunTimeManager extends Thread {
     public boolean onTouchEvent() {
         if (!player.getPlaying() && !newGameCreated) {
             newGame();
-            player.setPlaying(true);
         }
-        player.setUpTrue();
+        else {
+            player.setUpTrue();
+        }
         return true;
     }
 
     private boolean collision(AbstractObject a, AbstractObject b) {
-        Rect collisionBoxA = a.getHitbox();
-        Rect collisionBoxB = b.getHitbox();
-
-        if (Rect.intersects(collisionBoxA, collisionBoxB)) {
-            return true;
-        }
-        return false;
+        return Rect.intersects(a.getHitbox(), b.getHitbox());
     }
 
     private <T extends AbstractObject> void checkForCollision(ArrayList<T> objects, Canvas canvas) {
